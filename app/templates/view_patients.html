@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Пациенты</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "San Francisco", Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin-top: 40px;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        .header .button-group {
+            position: absolute;
+            left: 0;
+        }
+        .header h2 {
+            font-weight: 600;
+            color: #333;
+            text-align: center;
+            margin: 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        thead th {
+            background-color: #f2f2f7;
+            color: #555;
+            font-weight: 500;
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        tbody tr {
+            transition: background-color 0.3s ease;
+        }
+        tbody tr:hover {
+            background-color: #f7f7f9;
+        }
+        tbody td {
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+            color: #333;
+            font-size: 14px;
+            word-wrap: break-word;
+            white-space: normal;
+        }
+        .btn {
+            background-color: #007aff;
+            color: #fff;
+            border-radius: 12px;
+            padding: 10px 20px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin-right: 10px;
+        }
+        .btn:hover {
+            background-color: #005bb5;
+            color: #fff;
+        }
+        .table-responsive {
+            max-width: 100%;
+            overflow-x: auto;
+        }
+        @media (max-width: 768px) {
+            thead th, tbody td {
+                font-size: 12px;
+                padding: 8px;
+            }
+            .btn {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div class="button-group">
+            <a href="{{ url_for('dashboard') }}" class="btn">Назад на панель управления</a>
+            <a href="{{ url_for('add_patient') }}" class="btn">Добавить пациента</a>
+        </div>
+        <h2>Пациенты</h2>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-borderless">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Имя/Отчество</th>
+                    <th>Фамилия</th>
+                    <th>Дата рождения</th>
+                    <th>Пол</th>
+                    <th>Адрес проживания</th>
+                    <th>Номер телефона</th>
+                    <th>Контакт родственника</th>
+                    <th>Серия паспорта</th>
+                    <th>Номер паспорта</th>
+                    <th>Номер ОМС</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for patient in patients %}
+                <tr>
+                    <td>{{ patient.patient_id }}</td>
+                    <td>{{ patient.first_name }}</td>
+                    <td>{{ patient.last_name }}</td>
+                    <td>{{ patient.birth_date }}</td>
+                    <td>{{ patient.gender }}</td>
+                    <td>{{ patient.address }}</td>
+                    <td>{{ patient.phone_number }}</td>
+                    <td>{{ patient.emergency_contact }}</td>
+                    <td>{{ patient.passport_series }}</td>
+                    <td>{{ patient.passport_number }}</td>
+                    <td>{{ patient.oms_number }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

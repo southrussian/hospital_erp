@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Расписание</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "San Francisco", Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #1c1c1e;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin-top: 60px;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #1c1c1e;
+            text-align: center;
+            font-size: 24px;
+        }
+        .table {
+            width: 100%;
+            margin-bottom: 0;
+            color: #1c1c1e;
+        }
+        thead th {
+            background-color: #f5f5f7;
+            color: #3a3a3c;
+            font-weight: 500;
+            padding: 12px;
+            border-bottom: 1px solid #d1d1d6;
+        }
+        tbody tr {
+            transition: background-color 0.3s ease;
+        }
+        tbody tr:hover {
+            background-color: #f2f2f7;
+        }
+        tbody td {
+            padding: 12px;
+            border-bottom: 1px solid #d1d1d6;
+        }
+        .btn-primary {
+            background-color: #007aff;
+            color: #ffffff;
+            border-radius: 10px;
+            padding: 8px 16px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            border: none;
+            display: inline-block;
+            text-align: center;
+            margin-top: 15px;
+        }
+        .btn-primary:hover {
+            background-color: #005bb5;
+            color: #ffffff;
+        }
+        .btn-primary:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.5);
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-5">
+    <h2>Список расписаний</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Врач</th>
+                <th>День недели</th>
+                <th>Время начала</th>
+                <th>Время окончания</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for schedule in schedules %}
+            <tr>
+                <td>{{ schedule.schedule_id }}</td>
+                <td>{{ schedule.doctor.first_name }} {{ schedule.doctor.last_name }}</td>
+                <td>{{ schedule.day_of_week }}</td>
+                <td>{{ schedule.start_time.strftime('%H:%M') }}</td>
+                <td>{{ schedule.end_time.strftime('%H:%M') }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="text-center">
+        <a href="{{ url_for('add_schedule') }}" class="btn btn-primary">Добавить расписание</a>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

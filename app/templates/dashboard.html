@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Панель управления</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Apple-inspired styling */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "San Francisco", Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 80px auto;
+            padding: 0 15px;
+        }
+        .dashboard-card {
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: box-shadow 0.3s ease;
+        }
+        .dashboard-card:hover {
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        }
+        .dashboard-header {
+            background-color: #f2f2f7;
+            color: #333;
+            padding: 30px;
+            text-align: center;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .dashboard-header h2 {
+            margin: 0;
+            font-weight: 600;
+        }
+        .card-body {
+            padding: 40px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: space-around;
+        }
+        .dashboard-button {
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            color: #007aff;
+            text-decoration: none;
+            padding: 20px 30px;
+            font-size: 18px;
+            font-weight: 500;
+            text-align: center;
+            transition: all 0.3s ease;
+            width: 45%;
+        }
+        .dashboard-button:hover {
+            background-color: #f7f7f9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+        .logout-link {
+            display: block;
+            margin-top: 30px;
+            text-align: center;
+            color: #888;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        .logout-link:hover {
+            color: #007aff;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="dashboard-card">
+        <div class="dashboard-header">
+            <h2>Данные травматологического отделения</h2>
+        </div>
+        <div class="card-body">
+            <a href="{{ url_for('view_users') }}" class="dashboard-button">Пользователи</a>
+            <a href="{{ url_for('view_doctors') }}" class="dashboard-button">Врачи</a>
+            <a href="{{ url_for('view_departments') }}" class="dashboard-button">Отделения</a>
+            <a href="{{ url_for('view_patients') }}" class="dashboard-button">Пациенты</a>
+            <a href="{{ url_for('view_rooms') }}" class="dashboard-button">Палаты</a>
+            <a href="{{ url_for('view_schedule') }}" class="dashboard-button">Расписания</a>
+        </div>
+        <a href="{{ url_for('logout') }}" class="logout-link">Выйти</a>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>
