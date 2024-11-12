@@ -25,8 +25,10 @@ class Doctor(db.Model):
     doctor_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     first_name = db.Column(db.String(50), nullable=False)
+    middle_name = db.Column(db.String(50))  # Отчество
     last_name = db.Column(db.String(50), nullable=False)
     specialization = db.Column(db.String(100), nullable=False)
+    birth_date = db.Column(db.Date, nullable=False)
     phone_number = db.Column(db.String(20))
     department_id = db.Column(db.Integer, db.ForeignKey('departments.department_id'))
 
@@ -34,6 +36,7 @@ class Doctor(db.Model):
     department = db.relationship('Department', backref='doctors')
 
 
+# Department model
 class Department(db.Model):
     __tablename__ = 'departments'
     department_id = db.Column(db.Integer, primary_key=True)
@@ -42,10 +45,12 @@ class Department(db.Model):
     phone_number = db.Column(db.String(20))
 
 
+# Patient model
 class Patient(db.Model):
     __tablename__ = 'patients'
     patient_id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(50), nullable=False)
+    middle_name = db.Column(db.String(50))  # Отчество
     last_name = db.Column(db.String(50), nullable=False)
     birth_date = db.Column(db.Date, nullable=False)
     gender = db.Column(db.String(10))
@@ -55,8 +60,35 @@ class Patient(db.Model):
     passport_series = db.Column(db.String(10))
     passport_number = db.Column(db.String(10))
     oms_number = db.Column(db.String(16), unique=True)
+    room_id = db.Column(db.Integer, db.ForeignKey('rooms.room_id'))  # Привязка к палате
+
+    room = db.relationship('Room', backref='patients')
 
 
+# Room model
+class Room(db.Model):
+    __tablename__ = 'rooms'
+    room_id = db.Column(db.Integer, primary_key=True)
+    room_number = db.Column(db.String(10), unique=True, nullable=False)
+    department_id = db.Column(db.Integer, db.ForeignKey('departments.department_id'), nullable=False)
+    capacity = db.Column(db.Integer, nullable=False)  # Вместимость палаты
+
+    department = db.relationship('Department', backref='rooms')
+
+
+# Bed model
+class Bed(db.Model):
+    __tablename__ = 'beds'
+    bed_id = db.Column(db.Integer, primary_key=True)
+    room_id = db.Column(db.Integer, db.ForeignKey('rooms.room_id'), nullable=False)
+    patient_id = db.Column(db.Integer, db.ForeignKey('patients.patient_id'), nullable=True)
+    status = db.Column(db.String(20), nullable=False, default="free")  # "free" or "occupied"
+
+    room = db.relationship('Room', backref='beds')
+    patient = db.relationship('Patient', backref='bed', uselist=False)
+
+
+# Admission model
 class Admission(db.Model):
     __tablename__ = 'admissions'
     admission_id = db.Column(db.Integer, primary_key=True)
@@ -70,6 +102,7 @@ class Admission(db.Model):
     doctor = db.relationship('Doctor', backref='admissions')
 
 
+# MedicalRecord model
 class MedicalRecord(db.Model):
     __tablename__ = 'medical_records'
     record_id = db.Column(db.Integer, primary_key=True)
@@ -84,6 +117,7 @@ class MedicalRecord(db.Model):
     doctor = db.relationship('Doctor', backref='medical_records')
 
 
+# Operation model
 class Operation(db.Model):
     __tablename__ = 'operations'
     operation_id = db.Column(db.Integer, primary_key=True)
@@ -98,18 +132,41 @@ class Operation(db.Model):
     doctor = db.relationship('Doctor', backref='operations')
 
 
+# Medicine model
+class Medicine(db.Model):
+    __tablename__ = 'medicines'
+    medicine_id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text)
+    dosage_form = db.Column(db.String(50))
+
+
+# MedicineInventory model
+class MedicineInventory(db.Model):
+    __tablename__ = 'medicine_inventory'
+    inventory_id = db.Column(db.Integer, primary_key=True)
+    medicine_id = db.Column(db.Integer, db.ForeignKey('medicines.medicine_id'), nullable=False)
+    quantity = db.Column(db.Integer, nullable=False)
+    last_updated = db.Column(db.DateTime, default=datetime.utcnow)
+
+    medicine = db.relationship('Medicine', backref='inventory')
+
+
+# Prescription model
 class Prescription(db.Model):
     __tablename__ = 'prescriptions'
     prescription_id = db.Column(db.Integer, primary_key=True)
     record_id = db.Column(db.Integer, db.ForeignKey('medical_records.record_id'), nullable=False)
-    medicine_name = db.Column(db.String(100))
+    medicine_id = db.Column(db.Integer, db.ForeignKey('medicines.medicine_id'), nullable=False)  # Связь с лекарством
     dosage = db.Column(db.String(50))
     duration = db.Column(db.String(50))
     instructions = db.Column(db.Text)
 
     record = db.relationship('MedicalRecord', backref='prescriptions')
+    medicine = db.relationship('Medicine', backref='prescriptions')
 
 
+# Schedule model
 class Schedule(db.Model):
     __tablename__ = 'schedules'
     schedule_id = db.Column(db.Integer, primary_key=True)
@@ -119,13 +176,3 @@ class Schedule(db.Model):
     end_time = db.Column(db.Time)
 
     doctor = db.relationship('Doctor', backref='schedules')
-
-
-class Room(db.Model):
-    __tablename__ = 'rooms'
-    room_id = db.Column(db.Integer, primary_key=True)
-    room_number = db.Column(db.String(10), unique=True, nullable=False)
-    department_id = db.Column(db.Integer, db.ForeignKey('departments.department_id'), nullable=False)
-    capacity = db.Column(db.Integer)
-
-    department = db.relationship('Department', backref='rooms')

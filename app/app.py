@@ -112,10 +112,10 @@ def add_department():
         location = request.form['location']
         phone_number = request.form['phone_number']
 
-        new_department = Department(name=name, location=location, phone_number=phone_number)
+        department = Department(name=name, location=location, phone_number=phone_number)
 
         try:
-            db.session.add(new_department)
+            db.session.add(department)
             db.session.commit()
             flash("Department added successfully!", "success")
             return redirect(url_for('add_department'))  # Redirect to the same form or another page
@@ -161,6 +161,7 @@ def add_doctor():
         # Collect data from the form
         user_id = request.form['user_id']
         first_name = request.form['first_name']
+        middle_name = request.form['middle_name']
         last_name = request.form['last_name']
         specialization = request.form['specialization']
         phone_number = request.form['phone_number']
@@ -170,6 +171,7 @@ def add_doctor():
         new_doctor = Doctor(
             user_id=user_id,
             first_name=first_name,
+            middle_name=middle_name,
             last_name=last_name,
             specialization=specialization,
             phone_number=phone_number,
@@ -196,9 +198,9 @@ def add_patient():
     if request.method == 'POST':
         # Collect data from the form
         first_name = request.form['first_name']
+        middle_name = request.form['middle_name']
         last_name = request.form['last_name']
 
-        # Convert birth_date to a date object
         birth_date_str = request.form['birth_date']
         birth_date = datetime.strptime(birth_date_str, '%Y-%m-%d').date()
 
