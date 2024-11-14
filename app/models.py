@@ -36,7 +36,6 @@ class Doctor(db.Model):
     department = db.relationship('Department', backref='doctors')
 
 
-# Department model
 class Department(db.Model):
     __tablename__ = 'departments'
     department_id = db.Column(db.Integer, primary_key=True)
@@ -60,7 +59,7 @@ class Patient(db.Model):
     passport_series = db.Column(db.String(10))
     passport_number = db.Column(db.String(10))
     oms_number = db.Column(db.String(16), unique=True)
-    room_id = db.Column(db.Integer, db.ForeignKey('rooms.room_id'))  # Привязка к палате
+    room_id = db.Column(db.Integer, db.ForeignKey('rooms.room_id'))
 
     room = db.relationship('Room', backref='patients')
 
@@ -71,12 +70,11 @@ class Room(db.Model):
     room_id = db.Column(db.Integer, primary_key=True)
     room_number = db.Column(db.String(10), unique=True, nullable=False)
     department_id = db.Column(db.Integer, db.ForeignKey('departments.department_id'), nullable=False)
-    capacity = db.Column(db.Integer, nullable=False)  # Вместимость палаты
+    capacity = db.Column(db.Integer, nullable=False)
 
     department = db.relationship('Department', backref='rooms')
 
 
-# Bed model
 class Bed(db.Model):
     __tablename__ = 'beds'
     bed_id = db.Column(db.Integer, primary_key=True)
@@ -88,7 +86,6 @@ class Bed(db.Model):
     patient = db.relationship('Patient', backref='bed', uselist=False)
 
 
-# Admission model
 class Admission(db.Model):
     __tablename__ = 'admissions'
     admission_id = db.Column(db.Integer, primary_key=True)
@@ -102,7 +99,6 @@ class Admission(db.Model):
     doctor = db.relationship('Doctor', backref='admissions')
 
 
-# MedicalRecord model
 class MedicalRecord(db.Model):
     __tablename__ = 'medical_records'
     record_id = db.Column(db.Integer, primary_key=True)
@@ -117,7 +113,6 @@ class MedicalRecord(db.Model):
     doctor = db.relationship('Doctor', backref='medical_records')
 
 
-# Operation model
 class Operation(db.Model):
     __tablename__ = 'operations'
     operation_id = db.Column(db.Integer, primary_key=True)
@@ -132,7 +127,6 @@ class Operation(db.Model):
     doctor = db.relationship('Doctor', backref='operations')
 
 
-# Medicine model
 class Medicine(db.Model):
     __tablename__ = 'medicines'
     medicine_id = db.Column(db.Integer, primary_key=True)
@@ -141,7 +135,6 @@ class Medicine(db.Model):
     dosage_form = db.Column(db.String(50))
 
 
-# MedicineInventory model
 class MedicineInventory(db.Model):
     __tablename__ = 'medicine_inventory'
     inventory_id = db.Column(db.Integer, primary_key=True)
@@ -157,7 +150,7 @@ class Prescription(db.Model):
     __tablename__ = 'prescriptions'
     prescription_id = db.Column(db.Integer, primary_key=True)
     record_id = db.Column(db.Integer, db.ForeignKey('medical_records.record_id'), nullable=False)
-    medicine_id = db.Column(db.Integer, db.ForeignKey('medicines.medicine_id'), nullable=False)  # Связь с лекарством
+    medicine_id = db.Column(db.Integer, db.ForeignKey('medicines.medicine_id'), nullable=False)
     dosage = db.Column(db.String(50))
     duration = db.Column(db.String(50))
     instructions = db.Column(db.Text)
@@ -166,7 +159,6 @@ class Prescription(db.Model):
     medicine = db.relationship('Medicine', backref='prescriptions')
 
 
-# Schedule model
 class Schedule(db.Model):
     __tablename__ = 'schedules'
     schedule_id = db.Column(db.Integer, primary_key=True)

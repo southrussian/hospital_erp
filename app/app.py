@@ -19,12 +19,10 @@ def register():
         email = request.form['email']
         password = request.form['password']
 
-        # Проверка на существующего пользователя
         if User.query.filter_by(username=username).first() or User.query.filter_by(email=email).first():
             flash('Пользователь с таким именем или email уже существует.', 'danger')
             return redirect(url_for('register'))
 
-        # Создание нового пользователя
         new_user = User(username=username, email=email)
         new_user.set_password(password)
         db.session.add(new_user)
@@ -41,7 +39,6 @@ def login():
         username = request.form['username']
         password = request.form['password']
 
-        # Проверка пользователя
         user = User.query.filter_by(username=username).first()
         if user and user.check_password(password):
             session['user_id'] = user.user_id
@@ -118,7 +115,7 @@ def add_department():
             db.session.add(department)
             db.session.commit()
             flash("Department added successfully!", "success")
-            return redirect(url_for('add_department'))  # Redirect to the same form or another page
+            return redirect(url_for('add_department'))
         except Exception as e:
             db.session.rollback()
             flash(f"An error occurred: {e}", "danger")
@@ -134,31 +131,26 @@ def add_room():
         department_id = request.form['department_id']
         capacity = request.form['capacity']
 
-        # Create a new Room instance
-        new_room = Room(room_number=room_number, department_id=department_id, capacity=capacity)
+        room = Room(room_number=room_number, department_id=department_id, capacity=capacity)
 
         try:
-            # Add to the database session and commit
-            db.session.add(new_room)
+            db.session.add(room)
             db.session.commit()
             flash("Room added successfully!", "success")
             return redirect(url_for('add_room'))
         except Exception as e:
-            # Rollback and show error if any
             db.session.rollback()
             flash(f"An error occurred: {e}", "danger")
 
-    # Render the form with departments for GET requests
     return render_template('add_room.html', departments=departments)
 
 
 @app.route('/add_doctor', methods=['GET', 'POST'])
 def add_doctor():
-    users = User.query.filter_by(role='doctor').all()  # Fetch all users with role 'doctor'
-    departments = Department.query.all()  # Fetch all departments for the dropdown
+    users = User.query.filter_by(role='doctor').all()
+    departments = Department.query.all()
 
     if request.method == 'POST':
-        # Collect data from the form
         user_id = request.form['user_id']
         first_name = request.form['first_name']
         middle_name = request.form['middle_name']
@@ -167,8 +159,7 @@ def add_doctor():
         phone_number = request.form['phone_number']
         department_id = request.form['department_id']
 
-        # Create a new Doctor instance
-        new_doctor = Doctor(
+        doctor = Doctor(
             user_id=user_id,
             first_name=first_name,
             middle_name=middle_name,
@@ -179,24 +170,20 @@ def add_doctor():
         )
 
         try:
-            # Add to the database session and commit
-            db.session.add(new_doctor)
+            db.session.add(doctor)
             db.session.commit()
             flash("Doctor added successfully!", "success")
             return redirect(url_for('add_doctor'))
         except Exception as e:
-            # Rollback and show error if any
             db.session.rollback()
             flash(f"An error occurred: {e}", "danger")
 
-    # Render the form with users and departments for GET requests
     return render_template('add_doctor.html', users=users, departments=departments)
 
 
 @app.route('/add_patient', methods=['GET', 'POST'])
 def add_patient():
     if request.method == 'POST':
-        # Collect data from the form
         first_name = request.form['first_name']
         middle_name = request.form['middle_name']
         last_name = request.form['last_name']
@@ -212,9 +199,9 @@ def add_patient():
         passport_number = request.form['passport_number']
         oms_number = request.form['oms_number']
 
-        # Create a new Patient instance
-        new_patient = Patient(
+        patient = Patient(
             first_name=first_name,
+            middle_name=middle_name,
             last_name=last_name,
             birth_date=birth_date,
             gender=gender,
@@ -227,7 +214,7 @@ def add_patient():
         )
 
         try:
-            db.session.add(new_patient)
+            db.session.add(patient)
             db.session.commit()
             flash("Patient added successfully!", "success")
             return redirect(url_for('view_patients'))
@@ -253,7 +240,7 @@ def add_admission():
         else:
             discharge_date = None
 
-        new_admission = Admission(
+        admission = Admission(
             patient_id=patient_id,
             admission_date=admission_date,
             discharge_date=discharge_date,
@@ -262,7 +249,7 @@ def add_admission():
         )
 
         try:
-            db.session.add(new_admission)
+            db.session.add(admission)
             db.session.commit()
             flash('Поступление успешно добавлено!', 'success')
         except Exception as e:
@@ -288,8 +275,7 @@ def add_schedule():
         start_time = datetime.strptime(start_time, '%H:%M').time()
         end_time = datetime.strptime(end_time, '%H:%M').time()
 
-        # Создаем новый объект Schedule
-        new_schedule = Schedule(
+        schedule = Schedule(
             doctor_id=doctor_id,
             day_of_week=day_of_week,
             start_time=start_time,
@@ -297,8 +283,7 @@ def add_schedule():
         )
 
         try:
-            # Добавляем в сессию
-            db.session.add(new_schedule)
+            db.session.add(schedule)
             db.session.commit()
             flash('Расписание успешно добавлено!', 'success')
         except Exception as e:
