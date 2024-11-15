@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Добавить кровать</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0-alpha1/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f7f7f7;
+            font-family: -apple-system, BlinkMacSystemFont, "San Francisco", "Helvetica Neue", sans-serif;
+            color: #333;
+        }
+        .container {
+            margin-top: 50px;
+            max-width: 600px;
+        }
+        .form-control {
+            border-radius: 15px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+        }
+        .btn {
+            border-radius: 15px;
+            padding: 12px 25px;
+            background-color: #007aff;
+            border: none;
+            color: #fff;
+            font-weight: bold;
+        }
+        .btn:hover {
+            background-color: #0061d5;
+        }
+        .alert {
+            border-radius: 10px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        .card-header {
+            background-color: #f0f0f5;
+            border-radius: 15px 15px 0 0;
+            font-size: 1.5rem;
+            color: #333;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            Добавить кровать
+        </div>
+        <div class="card-body">
+            <!-- Выводим сообщения об успехе или ошибке -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <ul class="list-unstyled">
+                        {% for category, message in messages %}
+                            <li class="alert alert-{{ category }}">
+                                {{ message }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST">
+                <div class="mb-3">
+                    <label for="room_id" class="form-label">Номер комнаты</label>
+                    <select class="form-control" id="room_id" name="room_id" required>
+                        <option value="" disabled selected>Выберите комнату</option>
+                        {% for room in rooms %}
+                            <option value="{{ room.room_id }}">{{ room.room_number }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="patient_id" class="form-label">Пациент</label>
+                    <select class="form-control" id="patient_id" name="patient_id">
+                        <option value="" disabled selected>Выберите пациента</option>
+                        {% for patient in patients %}
+                            <option value="{{ patient.patient_id }}">{{ patient.first_name }} {{ patient.last_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="status" class="form-label">Статус кровати</label>
+                    <select class="form-control" id="status" name="status" required>
+                        <option value="" disabled selected>Выберите статус</option>
+                        <option value="free">Свободна</option>
+                        <option value="occupied">Занята</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">Добавить кровать</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0-alpha1/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

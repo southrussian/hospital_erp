@@ -97,9 +97,14 @@ def view_rooms():
 
 @app.route('/view_schedule')
 def view_schedule():
-    # Получаем список всех врачей
     schedules = Schedule.query.all()
     return render_template('view_schedule.html', schedules=schedules)
+
+
+@app.route('/view_admissions')
+def view_admissions():
+    admissions = Admission.query.all()
+    return render_template('view_admissions.html', admissions=admissions)
 
 
 @app.route('/add_department', methods=['GET', 'POST'])
@@ -156,6 +161,8 @@ def add_doctor():
         middle_name = request.form['middle_name']
         last_name = request.form['last_name']
         specialization = request.form['specialization']
+        birth_date_str = request.form['birth_date']
+        birth_date = datetime.strptime(birth_date_str, '%Y-%m-%d').date()
         phone_number = request.form['phone_number']
         department_id = request.form['department_id']
 
@@ -165,6 +172,7 @@ def add_doctor():
             middle_name=middle_name,
             last_name=last_name,
             specialization=specialization,
+            birth_date=birth_date,
             phone_number=phone_number,
             department_id=department_id
         )
@@ -183,7 +191,9 @@ def add_doctor():
 
 @app.route('/add_patient', methods=['GET', 'POST'])
 def add_patient():
+    rooms = Room.query.all()
     if request.method == 'POST':
+
         first_name = request.form['first_name']
         middle_name = request.form['middle_name']
         last_name = request.form['last_name']
@@ -198,6 +208,7 @@ def add_patient():
         passport_series = request.form['passport_series']
         passport_number = request.form['passport_number']
         oms_number = request.form['oms_number']
+        room_id = request.form['room_id']
 
         patient = Patient(
             first_name=first_name,
@@ -210,7 +221,8 @@ def add_patient():
             emergency_contact=emergency_contact,
             passport_series=passport_series,
             passport_number=passport_number,
-            oms_number=oms_number
+            oms_number=oms_number,
+            room_id=room_id
         )
 
         try:
@@ -222,7 +234,7 @@ def add_patient():
             db.session.rollback()
             flash(f"An error occurred: {e}", "danger")
 
-    return render_template('add_patient.html')
+    return render_template('add_patient.html', rooms=rooms)
 
 
 @app.route('/add_admission', methods=['GET', 'POST'])
@@ -299,7 +311,6 @@ def add_schedule():
 @app.route('/add_medical_record', methods=['GET', 'POST'])
 def add_medical_record():
     if request.method == 'POST':
-        record_id = request.form['record_id']
         patient_id = request.form['patient_id']
         doctor_id = request.form['doctor_id']
         diagnosis = request.form['diagnosis']
@@ -309,7 +320,6 @@ def add_medical_record():
         record_date = datetime.strptime(record_date, '%Y-%m-%d').date()
 
         medical_record = MedicalRecord(
-            record_id=record_id,
             patient_id=patient_id,
             doctor_id=doctor_id,
             diagnosis=diagnosis,
@@ -331,6 +341,157 @@ def add_medical_record():
     patients = Doctor.query.all()
 
     return render_template('add_medical_record.html', doctors=doctors, patients=patients)
+
+
+@app.route('/add_bed', methods=['GET', 'POST'])
+def add_bed():
+    rooms = Room.query.all()
+    patients = Patient.query.filter_by(bed=None).all()  # Только пациенты без кроватей
+
+    if request.method == 'POST':
+        room_id = request.form['room_id']
+        patient_id = request.form.get('patient_id')  # Пациент может быть не назначен
+        status = 'occupied' if patient_id else 'free'
+
+        bed = Bed(
+            room_id=room_id,
+            patient_id=patient_id,
+            status=status
+        )
+
+        try:
+            db.session.add(bed)
+            db.session.commit()
+            flash('Кровать успешно добавлена!', 'success')
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Произошла ошибка: {e}', 'danger')
+
+        return redirect(url_for('add_bed'))
+
+    return render_template('add_bed.html', rooms=rooms, patients=patients)
+
+
+@app.route('/add_medicine', methods=['GET', 'POST'])
+def add_medicine():
+    if request.method == 'POST':
+        name = request.form['name']
+        description = request.form['description']
+        dosage_form = request.form['dosage_form']
+
+        medicine = Medicine(
+            name=name,
+            description=description,
+            dosage_form=dosage_form
+        )
+
+        try:
+            db.session.add(medicine)
+            db.session.commit()
+            flash('Лекарство успешно добавлено!', 'success')
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Произошла ошибка: {e}', 'danger')
+
+        return redirect(url_for('add_medicine'))
+
+    return render_template('add_medicine.html')
+
+
+@app.route('/add_medicine_inventory', methods=['GET', 'POST'])
+def add_medicine_inventory():
+    medicines = Medicine.query.all()
+
+    if request.method == 'POST':
+        medicine_id = request.form['medicine_id']
+        quantity = request.form['quantity']
+        last_updated = request.form['last_updated']
+
+        inventory = MedicineInventory(
+            medicine_id=medicine_id,
+            quantity=quantity,
+            last_updated=last_updated
+        )
+
+        try:
+            db.session.add(inventory)
+            db.session.commit()
+            flash('Инвентарь лекарств успешно добавлен!', 'success')
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Произошла ошибка: {e}', 'danger')
+
+        return redirect(url_for('add_medicine_inventory'))
+
+    return render_template('add_medicine_inventory.html', medicines=medicines)
+
+
+@app.route('/add_prescription', methods=['GET', 'POST'])
+def add_prescription():
+    medical_records = MedicalRecord.query.all()
+    medicines = Medicine.query.all()
+
+    if request.method == 'POST':
+        record_id = request.form['record_id']
+        medicine_id = request.form['medicine_id']
+        dosage = request.form['dosage']
+        duration = request.form['duration']
+        instructions = request.form['instructions']
+
+        prescription = Prescription(
+            record_id=record_id,
+            medicine_id=medicine_id,
+            dosage=dosage,
+            duration=duration,
+            instructions=instructions
+        )
+
+        try:
+            db.session.add(prescription)
+            db.session.commit()
+            flash('Рецепт успешно добавлен!', 'success')
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Произошла ошибка: {e}', 'danger')
+
+        return redirect(url_for('add_prescription'))
+
+    return render_template('add_prescription.html', medical_records=medical_records, medicines=medicines)
+
+
+@app.route('/add_operation', methods=['GET', 'POST'])
+def add_operation():
+    patients = Patient.query.all()
+    doctors = Doctor.query.all()
+
+    if request.method == 'POST':
+        patient_id = request.form['patient_id']
+        doctor_id = request.form['doctor_id']
+        operation_type = request.form['operation_type']
+        operation_date = request.form['operation_date']
+        duration = request.form['duration']
+        outcome = request.form['outcome']
+
+        operation = Operation(
+            patient_id=patient_id,
+            doctor_id=doctor_id,
+            operation_type=operation_type,
+            operation_date=operation_date,
+            duration=duration,
+            outcome=outcome
+        )
+
+        try:
+            db.session.add(operation)
+            db.session.commit()
+            flash('Операция успешно добавлена!', 'success')
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Произошла ошибка: {e}', 'danger')
+
+        return redirect(url_for('add_operation'))
+
+    return render_template('add_operation.html', patients=patients, doctors=doctors)
 
 
 with app.app_context():

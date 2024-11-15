@@ -99,6 +99,7 @@ class Admission(db.Model):
     doctor = db.relationship('Doctor', backref='admissions')
 
 
+# MedicalRecord model
 class MedicalRecord(db.Model):
     __tablename__ = 'medical_records'
     record_id = db.Column(db.Integer, primary_key=True)
@@ -113,17 +114,18 @@ class MedicalRecord(db.Model):
     doctor = db.relationship('Doctor', backref='medical_records')
 
 
+# Operation model
 class Operation(db.Model):
     __tablename__ = 'operations'
     operation_id = db.Column(db.Integer, primary_key=True)
-    admission_id = db.Column(db.Integer, db.ForeignKey('admissions.admission_id'), nullable=False)
-    doctor_id = db.Column(db.Integer, db.ForeignKey('doctors.doctor_id'))
+    patient_id = db.Column(db.Integer, db.ForeignKey('patients.patient_id'), nullable=False)
+    doctor_id = db.Column(db.Integer, db.ForeignKey('doctors.doctor_id'), nullable=False)
     operation_type = db.Column(db.String(100))
     operation_date = db.Column(db.DateTime, default=datetime.utcnow)
     duration = db.Column(db.Integer)
     outcome = db.Column(db.String(150))
 
-    admission = db.relationship('Admission', backref='operations')
+    patient = db.relationship('Patient', backref='operations')
     doctor = db.relationship('Doctor', backref='operations')
 
 

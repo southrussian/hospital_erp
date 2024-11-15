@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Добавить врача</title>
+    <title>Добавить рецепт</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0-alpha1/css/bootstrap.min.css">
     <style>
         body {
@@ -59,7 +59,7 @@
 <div class="container">
     <div class="card">
         <div class="card-header">
-            Добавить врача
+            Добавить рецепт
         </div>
         <div class="card-body">
             <!-- Выводим сообщения об успехе или ошибке -->
@@ -77,56 +77,41 @@
 
             <form method="POST">
                 <div class="mb-3">
-                    <label for="user_id" class="form-label">ID пользователя</label>
-                    <select class="form-control" id="user_id" name="user_id" required>
-                        <option value="" disabled selected>Выберите пользователя</option>
-                        {% for user in users %}
-                            <option value="{{ user.user_id }}">{{ user.username }}</option>
+                    <label for="record_id" class="form-label">Медицинская запись</label>
+                    <select class="form-control" id="record_id" name="record_id" required>
+                        <option value="" disabled selected>Выберите медицинскую запись</option>
+                        {% for record in medical_records %}
+                            <option value="{{ record.record_id }}">{{ record.record_id }} - {{ record.patient.first_name }} {{ record.patient.last_name }}</option>
                         {% endfor %}
                     </select>
                 </div>
 
                 <div class="mb-3">
-                    <label for="first_name" class="form-label">Имя</label>
-                    <input type="text" class="form-control" id="first_name" name="first_name" required placeholder="Введите имя">
-                </div>
-
-                <div class="mb-3">
-                    <label for="middle_name" class="form-label">Отчество</label>
-                    <input type="text" class="form-control" id="middle_name" name="middle_name" required placeholder="Введите отчество">
-                </div>
-
-                <div class="mb-3">
-                    <label for="last_name" class="form-label">Фамилия</label>
-                    <input type="text" class="form-control" id="last_name" name="last_name" required placeholder="Введите фамилию">
-                </div>
-
-                <div class="mb-3">
-                    <label for="specialization" class="form-label">Специализация</label>
-                    <input type="text" class="form-control" id="specialization" name="specialization" required placeholder="Введите специализацию">
-                </div>
-
-                <div class="mb-3">
-                    <label for="birth_date" class="form-label">Дата рождения</label>
-                    <input type="date" class="form-control" id="birth_date" name="birth_date" required>
-                </div>
-
-                <div class="mb-3">
-                    <label for="phone_number" class="form-label">Номер телефона</label>
-                    <input type="text" class="form-control" id="phone_number" name="phone_number" required placeholder="Введите номер телефона">
-                </div>
-
-                <div class="mb-3">
-                    <label for="department_id" class="form-label">Отделение</label>
-                    <select class="form-control" id="department_id" name="department_id" required>
-                        <option value="" disabled selected>Выберите отделение</option>
-                        {% for department in departments %}
-                            <option value="{{ department.department_id }}">{{ department.name }}</option>
+                    <label for="medicine_id" class="form-label">Лекарство</label>
+                    <select class="form-control" id="medicine_id" name="medicine_id" required>
+                        <option value="" disabled selected>Выберите лекарство</option>
+                        {% for medicine in medicines %}
+                            <option value="{{ medicine.medicine_id }}">{{ medicine.name }}</option>
                         {% endfor %}
                     </select>
                 </div>
 
-                <button type="submit" class="btn btn-primary w-100">Добавить врача</button>
+                <div class="mb-3">
+                    <label for="dosage" class="form-label">Дозировка</label>
+                    <input type="text" class="form-control" id="dosage" name="dosage" required placeholder="Введите дозировку">
+                </div>
+
+                <div class="mb-3">
+                    <label for="duration" class="form-label">Продолжительность</label>
+                    <input type="text" class="form-control" id="duration" name="duration" required placeholder="Введите продолжительность">
+                </div>
+
+                <div class="mb-3">
+                    <label for="instructions" class="form-label">Инструкции</label>
+                    <textarea class="form-control" id="instructions" name="instructions" rows="3" required placeholder="Введите инструкции"></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">Добавить рецепт</button>
             </form>
         </div>
     </div>
