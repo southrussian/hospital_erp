@@ -134,13 +134,13 @@ def view_operations():
 @app.route('/view_prescriptions')
 def view_prescriptions():
     prescriptions = Prescription.query.all()
-    return render_template('view_operations.html', prescriptions=prescriptions)
+    return render_template('view_prescriptions.html', prescriptions=prescriptions)
 
 
 @app.route('/view_medical_records')
 def view_medical_records():
     records = Operation.query.all()
-    return render_template('view_operations.html', records=records)
+    return render_template('view_medical_records.html', records=records)
 
 
 @app.route('/add_department', methods=['GET', 'POST'])
