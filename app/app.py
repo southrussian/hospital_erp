@@ -107,6 +107,42 @@ def view_admissions():
     return render_template('view_admissions.html', admissions=admissions)
 
 
+@app.route('/view_medicine')
+def view_medicine():
+    medicines = Medicine.query.all()
+    return render_template('view_medicines.html', medicines=medicines)
+
+
+@app.route('/view_medicine_inventory')
+def view_medicine_inventory():
+    inventory = MedicineInventory.query.all()
+    return render_template('view_medicine_inventory.html', inventory=inventory)
+
+
+@app.route('/view_beds')
+def view_beds():
+    beds = Bed.query.all()
+    return render_template('view_beds.html', beds=beds)
+
+
+@app.route('/view_operations')
+def view_operations():
+    operations = Operation.query.all()
+    return render_template('view_operations.html', operations=operations)
+
+
+@app.route('/view_prescriptions')
+def view_prescriptions():
+    prescriptions = Prescription.query.all()
+    return render_template('view_operations.html', prescriptions=prescriptions)
+
+
+@app.route('/view_medical_records')
+def view_medical_records():
+    records = Operation.query.all()
+    return render_template('view_operations.html', records=records)
+
+
 @app.route('/add_department', methods=['GET', 'POST'])
 def add_department():
     if request.method == 'POST':
