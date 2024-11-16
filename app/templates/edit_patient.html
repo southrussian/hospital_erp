@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Изменить пациента</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0-alpha1/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f7f7f7;
+            font-family: -apple-system, BlinkMacSystemFont, "San Francisco", "Helvetica Neue", sans-serif;
+            color: #333;
+        }
+        .container {
+            margin-top: 50px;
+            max-width: 600px;
+        }
+        .form-control {
+            border-radius: 15px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+        }
+        .btn {
+            border-radius: 15px;
+            padding: 12px 25px;
+            background-color: #007aff;
+            border: none;
+            color: #fff;
+            font-weight: bold;
+        }
+        .btn:hover {
+            background-color: #0061d5;
+        }
+        .alert {
+            border-radius: 10px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        .card-header {
+            background-color: #f0f0f5;
+            border-radius: 15px 15px 0 0;
+            font-size: 1.5rem;
+            color: #333;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            Изменить пациента
+        </div>
+        <div class="card-body">
+            <!-- Выводим сообщения об успехе или ошибке -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <ul class="list-unstyled">
+                        {% for category, message in messages %}
+                            <li class="alert alert-{{ category }}">
+                                {{ message }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST">
+                <div class="mb-3">
+                    <label for="first_name" class="form-label">Имя</label>
+                    <input type="text" class="form-control" id="first_name" name="first_name" required value="{{ patient.first_name }}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="middle_name" class="form-label">Отчество</label>
+                    <input type="text" class="form-control" id="middle_name" name="middle_name" value="{{ patient.middle_name }}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="last_name" class="form-label">Фамилия</label>
+                    <input type="text" class="form-control" id="last_name" name="last_name" required value="{{ patient.last_name }}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="birth_date" class="form-label">Дата рождения</label>
+                    <input type="date" class="form-control" id="birth_date" name="birth_date" required value="{{ patient.birth_date }}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="gender" class="form-label">Пол</label>
+                    <select class="form-control" id="gender" name="gender" required>
+                        <option value="Мужской" {% if patient.gender == 'Мужской' %}selected{% endif %}>Мужской</option>
+                        <option value="Женский" {% if patient.gender == 'Женский' %}selected{% endif %}>Женский</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="address" class="form-label">Адрес</label>
+                    <input type="text" class="form-control" id="address" name="address" required value="{{ patient.address }}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="phone_number" class="form-label">Номер телефона</label>
+                    <input type="text" class="form-control" id="phone_number" name="phone_number" required value="{{ patient.phone_number }}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="emergency_contact" class="form-label">Контактное лицо для экстренных случаев</label>
+                    <input type="text" class="form-control" id="emergency_contact" name="emergency_contact" required value="{{ patient.emergency_contact }}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="passport_series" class="form-label">Серия паспорта</label>
+                    <input type="text" class="form-control" id="passport_series" name="passport_series" required value="{{ patient.passport_series }}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="passport_number" class="form-label">Номер паспорта</label>
+                    <input type="text" class="form-control" id="passport_number" name="passport_number" required value="{{ patient.passport_number }}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="oms_number" class="form-label">Номер ОМС</label>
+                    <input type="text" class="form-control" id="oms_number" name="oms_number" required value="{{ patient.oms_number }}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="room_id" class="form-label">Номер комнаты</label>
+                    <select class="form-control" id="room_id" name="room_id" required>
+                        {% for room in rooms %}
+                            <option value="{{ room.room_id }}" {% if room.room_id == patient.room_id %}selected{% endif %}>{{ room.room_number }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">Сохранить изменения</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0-alpha1/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

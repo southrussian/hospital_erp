@@ -84,7 +84,7 @@
 <div class="container">
     <div class="dashboard-card">
         <div class="dashboard-header">
-            <h2>Данные травматологического отделения</h2>
+            <h2>Дашборд травматологического отделения</h2>
         </div>
         <div class="card-body">
             <a href="{{ url_for('view_users') }}" class="dashboard-button">Пользователи</a>
@@ -93,6 +93,11 @@
             <a href="{{ url_for('view_patients') }}" class="dashboard-button">Пациенты</a>
             <a href="{{ url_for('view_rooms') }}" class="dashboard-button">Палаты</a>
             <a href="{{ url_for('view_schedule') }}" class="dashboard-button">Расписания</a>
+            <a  class="dashboard-button">Медикаменты</a>
+            <a  class="dashboard-button">Инвентарь</a>
+            <a  class="dashboard-button">Койки</a>
+            <a  class="dashboard-button">Операции</a>
+            <a  class="dashboard-button">Предписания</a>
         </div>
         <a href="{{ url_for('logout') }}" class="logout-link">Выйти</a>
     </div>

@@ -57,7 +57,7 @@ def logout():
     return redirect(url_for('login'))
 
 
-@app.route('/dashboard')
+@app.route('/')
 def dashboard():
     if 'user_id' not in session:
         flash('Пожалуйста, войдите для доступа к этой странице.', 'warning')
@@ -362,7 +362,7 @@ def add_bed():
         try:
             db.session.add(bed)
             db.session.commit()
-            flash('Кровать успешно добавлена!', 'success')
+            flash('Койка успешно добавлена!', 'success')
         except Exception as e:
             db.session.rollback()
             flash(f'Произошла ошибка: {e}', 'danger')
@@ -492,6 +492,89 @@ def add_operation():
         return redirect(url_for('add_operation'))
 
     return render_template('add_operation.html', patients=patients, doctors=doctors)
+
+
+@app.route('/edit_patient/<int:patient_id>', methods=['GET', 'POST'])
+def edit_patient(patient_id):
+    patient = Patient.query.get_or_404(patient_id)
+    rooms = Room.query.all()
+
+    if request.method == 'POST':
+        patient.first_name = request.form['first_name']
+        patient.middle_name = request.form['middle_name']
+        patient.last_name = request.form['last_name']
+        patient.birth_date = datetime.strptime(request.form['birth_date'], '%Y-%m-%d').date()
+        patient.gender = request.form['gender']
+        patient.address = request.form['address']
+        patient.phone_number = request.form['phone_number']
+        patient.emergency_contact = request.form['emergency_contact']
+        patient.passport_series = request.form['passport_series']
+        patient.passport_number = request.form['passport_number']
+        patient.oms_number = request.form['oms_number']
+        patient.room_id = request.form['room_id']
+
+        try:
+            db.session.commit()
+            flash("Patient updated successfully!", "success")
+            return redirect(url_for('view_patients'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f"An error occurred: {e}", "danger")
+
+    return render_template('edit_patient.html', patient=patient, rooms=rooms)
+
+
+@app.route('/edit_doctor/<int:doctor_id>', methods=['GET', 'POST'])
+def edit_doctor(doctor_id):
+    doctor = Doctor.query.get_or_404(doctor_id)
+    users = User.query.filter_by(role='doctor').all()
+    departments = Department.query.all()
+
+    if request.method == 'POST':
+        doctor.user_id = request.form['user_id']
+        doctor.first_name = request.form['first_name']
+        doctor.middle_name = request.form['middle_name']
+        doctor.last_name = request.form['last_name']
+        doctor.specialization = request.form['specialization']
+        doctor.birth_date = datetime.strptime(request.form['birth_date'], '%Y-%m-%d').date()
+        doctor.phone_number = request.form['phone_number']
+        doctor.department_id = request.form['department_id']
+
+        try:
+            db.session.commit()
+            flash("Doctor updated successfully!", "success")
+            return redirect(url_for('view_doctors'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f"An error occurred: {e}", "danger")
+
+    return render_template('edit_doctor.html', doctor=doctor, users=users, departments=departments)
+
+
+@app.route('/delete_doctor/<int:doctor_id>', methods=['POST'])
+def delete_doctor(doctor_id):
+    doctor = Doctor.query.get_or_404(doctor_id)
+    try:
+        db.session.delete(doctor)
+        db.session.commit()
+        flash("Doctor deleted successfully!", "success")
+    except Exception as e:
+        db.session.rollback()
+        flash(f"An error occurred: {e}", "danger")
+    return redirect(url_for('view_doctors'))
+
+
+@app.route('/delete_patient/<int:patient_id>', methods=['POST'])
+def delete_patient(patient_id):
+    patient = Patient.query.get_or_404(patient_id)
+    try:
+        db.session.delete(patient)
+        db.session.commit()
+        flash("Patient deleted successfully!", "success")
+    except Exception as e:
+        db.session.rollback()
+        flash(f"An error occurred: {e}", "danger")
+    return redirect(url_for('view_patients'))
 
 
 with app.app_context():
