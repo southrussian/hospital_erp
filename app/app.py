@@ -1,7 +1,7 @@
 from models import *
-from flask import Flask, render_template, redirect, url_for, flash, request, session, jsonify
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, render_template, redirect, url_for, flash, request, session
+from patients import view_patients, add_patient, edit_patient, delete_patient
+from doctors import view_doctors, add_doctor, edit_doctor, delete_doctor
 
 
 app = Flask(__name__)
@@ -10,6 +10,16 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = 'oxxxymiron'
 
 db.init_app(app)
+
+view_patients(app)
+add_patient(app)
+edit_patient(app)
+delete_patient(app)
+
+view_doctors(app)
+add_doctor(app)
+edit_doctor(app)
+delete_doctor(app)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -71,22 +81,10 @@ def view_users():
     return render_template('view_users.html', users=users)
 
 
-@app.route('/view_doctors')
-def view_doctors():
-    doctors = Doctor.query.all()
-    return render_template('view_doctors.html', doctors=doctors)
-
-
 @app.route('/view_departments')
 def view_departments():
     departments = Department.query.all()
     return render_template('view_departments.html', departments=departments)
-
-
-@app.route('/view_patients')
-def view_patients():
-    patients = Patient.query.all()
-    return render_template('view_patients.html', patients=patients)
 
 
 @app.route('/view_rooms')
@@ -184,93 +182,6 @@ def add_room():
             flash(f"An error occurred: {e}", "danger")
 
     return render_template('add_room.html', departments=departments)
-
-
-@app.route('/add_doctor', methods=['GET', 'POST'])
-def add_doctor():
-    users = User.query.filter_by(role='doctor').all()
-    departments = Department.query.all()
-
-    if request.method == 'POST':
-        user_id = request.form['user_id']
-        first_name = request.form['first_name']
-        middle_name = request.form['middle_name']
-        last_name = request.form['last_name']
-        specialization = request.form['specialization']
-        birth_date_str = request.form['birth_date']
-        birth_date = datetime.strptime(birth_date_str, '%Y-%m-%d').date()
-        phone_number = request.form['phone_number']
-        department_id = request.form['department_id']
-
-        doctor = Doctor(
-            user_id=user_id,
-            first_name=first_name,
-            middle_name=middle_name,
-            last_name=last_name,
-            specialization=specialization,
-            birth_date=birth_date,
-            phone_number=phone_number,
-            department_id=department_id
-        )
-
-        try:
-            db.session.add(doctor)
-            db.session.commit()
-            flash("Doctor added successfully!", "success")
-            return redirect(url_for('add_doctor'))
-        except Exception as e:
-            db.session.rollback()
-            flash(f"An error occurred: {e}", "danger")
-
-    return render_template('add_doctor.html', users=users, departments=departments)
-
-
-@app.route('/add_patient', methods=['GET', 'POST'])
-def add_patient():
-    rooms = Room.query.all()
-    if request.method == 'POST':
-
-        first_name = request.form['first_name']
-        middle_name = request.form['middle_name']
-        last_name = request.form['last_name']
-
-        birth_date_str = request.form['birth_date']
-        birth_date = datetime.strptime(birth_date_str, '%Y-%m-%d').date()
-
-        gender = request.form['gender']
-        address = request.form['address']
-        phone_number = request.form['phone_number']
-        emergency_contact = request.form['emergency_contact']
-        passport_series = request.form['passport_series']
-        passport_number = request.form['passport_number']
-        oms_number = request.form['oms_number']
-        room_id = request.form['room_id']
-
-        patient = Patient(
-            first_name=first_name,
-            middle_name=middle_name,
-            last_name=last_name,
-            birth_date=birth_date,
-            gender=gender,
-            address=address,
-            phone_number=phone_number,
-            emergency_contact=emergency_contact,
-            passport_series=passport_series,
-            passport_number=passport_number,
-            oms_number=oms_number,
-            room_id=room_id
-        )
-
-        try:
-            db.session.add(patient)
-            db.session.commit()
-            flash("Patient added successfully!", "success")
-            return redirect(url_for('view_patients'))
-        except Exception as e:
-            db.session.rollback()
-            flash(f"An error occurred: {e}", "danger")
-
-    return render_template('add_patient.html', rooms=rooms)
 
 
 @app.route('/add_admission', methods=['GET', 'POST'])
@@ -528,89 +439,6 @@ def add_operation():
         return redirect(url_for('add_operation'))
 
     return render_template('add_operation.html', patients=patients, doctors=doctors)
-
-
-@app.route('/edit_patient/<int:patient_id>', methods=['GET', 'POST'])
-def edit_patient(patient_id):
-    patient = Patient.query.get_or_404(patient_id)
-    rooms = Room.query.all()
-
-    if request.method == 'POST':
-        patient.first_name = request.form['first_name']
-        patient.middle_name = request.form['middle_name']
-        patient.last_name = request.form['last_name']
-        patient.birth_date = datetime.strptime(request.form['birth_date'], '%Y-%m-%d').date()
-        patient.gender = request.form['gender']
-        patient.address = request.form['address']
-        patient.phone_number = request.form['phone_number']
-        patient.emergency_contact = request.form['emergency_contact']
-        patient.passport_series = request.form['passport_series']
-        patient.passport_number = request.form['passport_number']
-        patient.oms_number = request.form['oms_number']
-        patient.room_id = request.form['room_id']
-
-        try:
-            db.session.commit()
-            flash("Patient updated successfully!", "success")
-            return redirect(url_for('view_patients'))
-        except Exception as e:
-            db.session.rollback()
-            flash(f"An error occurred: {e}", "danger")
-
-    return render_template('edit_patient.html', patient=patient, rooms=rooms)
-
-
-@app.route('/edit_doctor/<int:doctor_id>', methods=['GET', 'POST'])
-def edit_doctor(doctor_id):
-    doctor = Doctor.query.get_or_404(doctor_id)
-    users = User.query.filter_by(role='doctor').all()
-    departments = Department.query.all()
-
-    if request.method == 'POST':
-        doctor.user_id = request.form['user_id']
-        doctor.first_name = request.form['first_name']
-        doctor.middle_name = request.form['middle_name']
-        doctor.last_name = request.form['last_name']
-        doctor.specialization = request.form['specialization']
-        doctor.birth_date = datetime.strptime(request.form['birth_date'], '%Y-%m-%d').date()
-        doctor.phone_number = request.form['phone_number']
-        doctor.department_id = request.form['department_id']
-
-        try:
-            db.session.commit()
-            flash("Doctor updated successfully!", "success")
-            return redirect(url_for('view_doctors'))
-        except Exception as e:
-            db.session.rollback()
-            flash(f"An error occurred: {e}", "danger")
-
-    return render_template('edit_doctor.html', doctor=doctor, users=users, departments=departments)
-
-
-@app.route('/delete_doctor/<int:doctor_id>', methods=['POST'])
-def delete_doctor(doctor_id):
-    doctor = Doctor.query.get_or_404(doctor_id)
-    try:
-        db.session.delete(doctor)
-        db.session.commit()
-        flash("Doctor deleted successfully!", "success")
-    except Exception as e:
-        db.session.rollback()
-        flash(f"An error occurred: {e}", "danger")
-    return redirect(url_for('view_doctors'))
-
-
-@app.route('/delete_patient/<int:patient_id>', methods=['POST'])
-def delete_patient(patient_id):
-    patient = Patient.query.get_or_404(patient_id)
-    try:
-        db.session.delete(patient)
-        db.session.commit()
-        flash("Patient deleted successfully!", "success")
-    except Exception as e:
-        db.session.rollback()
-        flash(f"An error occurred: {e}", "danger")
-    return redirect(url_for('view_patients'))
 
 
 with app.app_context():

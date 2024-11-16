@@ -1,80 +1,57 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Расписание</title>
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Расписания</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0-alpha1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "San Francisco", Arial, sans-serif;
-            background-color: #f4f4f4;
-            color: #1c1c1e;
-            margin: 0;
-            padding: 0;
+            background-color: #f7f7f7;
+            font-family: -apple-system, BlinkMacSystemFont, "San Francisco", "Helvetica Neue", sans-serif;
+            color: #333;
         }
         .container {
-            max-width: 800px;
-            margin-top: 60px;
-            padding: 20px;
-            background-color: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-        }
-        h2 {
-            font-weight: 600;
-            margin-bottom: 20px;
-            color: #1c1c1e;
-            text-align: center;
-            font-size: 24px;
+            margin-top: 50px;
+            max-width: 1200px;
         }
         .table {
-            width: 100%;
-            margin-bottom: 0;
-            color: #1c1c1e;
-        }
-        thead th {
-            background-color: #f5f5f7;
-            color: #3a3a3c;
-            font-weight: 500;
-            padding: 12px;
-            border-bottom: 1px solid #d1d1d6;
-        }
-        tbody tr {
-            transition: background-color 0.3s ease;
-        }
-        tbody tr:hover {
-            background-color: #f2f2f7;
-        }
-        tbody td {
-            padding: 12px;
-            border-bottom: 1px solid #d1d1d6;
-        }
-        .btn-primary {
-            background-color: #007aff;
-            color: #ffffff;
+            background-color: #fff;
             border-radius: 10px;
-            padding: 8px 16px;
-            font-size: 16px;
-            transition: background-color 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .btn {
+            border-radius: 15px;
+            padding: 10px 20px;
+            background-color: #007aff;
             border: none;
-            display: inline-block;
-            text-align: center;
-            margin-top: 15px;
+            color: #fff;
+            font-weight: bold;
         }
-        .btn-primary:hover {
-            background-color: #005bb5;
-            color: #ffffff;
+        .btn:hover {
+            background-color: #0061d5;
         }
-        .btn-primary:focus {
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.5);
+        .action-btn {
+            border: none;
+            background: none;
+            color: #007aff;
+            font-size: 1.2rem;
+            padding: 0;
+            margin: 0;
+        }
+        .action-btn:hover {
+            color: #0061d5;
         }
     </style>
 </head>
 <body>
-<div class="container mt-5">
-    <h2>Список расписаний</h2>
-    <table class="table">
+
+<div class="container">
+    <h1 class="text-center mb-4">Расписания</h1>
+    <a href="{{ url_for('dashboard') }}" class="btn btn-primary mb-3">Назад на панель управления</a>
+    <a href="{{ url_for('add_schedule') }}" class="btn btn-primary mb-3">Добавить расписание</a>
+    <table class="table table-striped">
         <thead>
             <tr>
                 <th>ID</th>
@@ -88,21 +65,24 @@
             {% for schedule in schedules %}
             <tr>
                 <td>{{ schedule.schedule_id }}</td>
-                <td>{{ schedule.doctor.first_name }} {{ schedule.doctor.last_name }}</td>
+                <td>{{ schedule.doctor.last_name }} {{ schedule.doctor.first_name }} {{ schedule.doctor.middle_name }}</td>
                 <td>{{ schedule.day_of_week }}</td>
                 <td>{{ schedule.start_time.strftime('%H:%M') }}</td>
                 <td>{{ schedule.end_time.strftime('%H:%M') }}</td>
+                    <a href="{{ url_for('edit_schedule', schedule_id=schedule.schedule_id) }}" class="action-btn">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <form action="{{ url_for('delete_schedule', schedule_id=schedule.schedule_id) }}" method="POST" style="display:inline;">
+                        <button type="submit" class="action-btn" onclick="return confirm('Вы уверены, что хотите удалить это расписание?')">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </form>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
-    <div class="text-center">
-        <a href="{{ url_for('add_schedule') }}" class="btn btn-primary">Добавить расписание</a>
-    </div>
 </div>
-
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0-alpha1/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
