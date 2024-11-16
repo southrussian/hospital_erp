@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Добавить кровать</title>
+    <title>Добавить койку</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0-alpha1/css/bootstrap.min.css">
     <style>
         body {
@@ -59,7 +59,7 @@
 <div class="container">
     <div class="card">
         <div class="card-header">
-            Добавить кровать
+            Добавить койку
         </div>
         <div class="card-body">
             <!-- Выводим сообщения об успехе или ошибке -->
@@ -77,9 +77,9 @@
 
             <form method="POST">
                 <div class="mb-3">
-                    <label for="room_id" class="form-label">Номер комнаты</label>
+                    <label for="room_id" class="form-label">Номер палаты</label>
                     <select class="form-control" id="room_id" name="room_id" required>
-                        <option value="" disabled selected>Выберите комнату</option>
+                        <option value="" disabled selected>Выберите палату</option>
                         {% for room in rooms %}
                             <option value="{{ room.room_id }}">{{ room.room_number }}</option>
                         {% endfor %}
@@ -96,16 +96,7 @@
                     </select>
                 </div>
 
-                <div class="mb-3">
-                    <label for="status" class="form-label">Статус кровати</label>
-                    <select class="form-control" id="status" name="status" required>
-                        <option value="" disabled selected>Выберите статус</option>
-                        <option value="free">Свободна</option>
-                        <option value="occupied">Занята</option>
-                    </select>
-                </div>
-
-                <button type="submit" class="btn btn-primary w-100">Добавить кровать</button>
+                <button type="submit" class="btn btn-primary w-100">Добавить койку</button>
             </form>
         </div>
     </div>

@@ -1,5 +1,5 @@
 from models import *
-from flask import Flask, render_template, redirect, url_for, flash, request, session
+from flask import Flask, render_template, redirect, url_for, flash, session
 
 from users import register, login, logout, view_users
 from patients import view_patients, add_patient, edit_patient, delete_patient

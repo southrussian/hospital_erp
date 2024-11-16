@@ -92,11 +92,13 @@
             <a href="{{ url_for('view_patients') }}" class="dashboard-button">Пациенты</a>
             <a href="{{ url_for('view_rooms') }}" class="dashboard-button">Палаты</a>
             <a href="{{ url_for('view_schedule') }}" class="dashboard-button">Расписания</a>
-            <a  class="dashboard-button">Медикаменты</a>
-            <a  class="dashboard-button">Инвентарь</a>
-            <a  class="dashboard-button">Койки</a>
-            <a  class="dashboard-button">Операции</a>
-            <a  class="dashboard-button">Предписания</a>
+            <a href="{{ url_for('view_medicine')}}" class="dashboard-button">Медикаменты</a>
+            <a href="{{ url_for('view_medicine_inventory')}}" class="dashboard-button">Инвентарь</a>
+            <a href="{{ url_for('view_beds') }}" class="dashboard-button">Койки</a>
+            <a href="{{ url_for('view_operations')}}" class="dashboard-button">Операции</a>
+            <a href="{{ url_for('view_prescriptions')}}" class="dashboard-button">Предписания</a>
+            <a href="{{ url_for('view_medical_records')}}" class="dashboard-button">Записи осмотров</a>
+            <a href="{{ url_for('view_admissions')}}" class="dashboard-button">Поступления</a>
         </div>
         <a href="{{ url_for('logout') }}" class="logout-link">Выйти</a>
     </div>

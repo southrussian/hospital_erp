@@ -50,7 +50,7 @@ def edit_schedule(app):
 
         if request.method == 'POST':
             schedule.doctor_id = request.form['doctor_id']
-            schedule_id.day_of_week = request.form['day_of_week']
+            schedule.day_of_week = request.form['day_of_week']
             schedule.start_time = request.form['start_time']
             schedule.end_time = request.form['end_time']
 
@@ -66,7 +66,7 @@ def edit_schedule(app):
 
             return redirect(url_for('view_schedule'))
 
-        return render_template('view_schedule.html', schedule=schedule, doctors=doctors)
+        return render_template('edit_schedule.html', schedule=schedule, doctors=doctors)
 
 
 def delete_schedule(app):

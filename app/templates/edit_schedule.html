@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Добавить рецепт</title>
+    <title>Изменить расписание</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0-alpha1/css/bootstrap.min.css">
     <style>
         body {
@@ -59,7 +59,7 @@
 <div class="container">
     <div class="card">
         <div class="card-header">
-            Добавить рецепт
+            Изменить расписание
         </div>
         <div class="card-body">
             <!-- Выводим сообщения об успехе или ошибке -->
@@ -77,41 +77,38 @@
 
             <form method="POST">
                 <div class="mb-3">
-                    <label for="record_id" class="form-label">Медицинская запись</label>
-                    <select class="form-control" id="record_id" name="record_id" required>
-                        <option value="" disabled selected>Выберите медицинскую запись</option>
-                        {% for record in medical_records %}
-                            <option value="{{ record.record_id }}">{{ record.patient.first_name }} {{ record.patient.last_name }}</option>
+                    <label for="doctor_id" class="form-label">Врач</label>
+                    <select class="form-control" id="doctor_id" name="doctor_id" required>
+                        {% for doctor in doctors %}
+                            <option value="{{ doctor.doctor_id }}" {% if doctor.doctor_id == schedule.doctor_id %}selected{% endif %}>{{ doctor.first_name }} {{ doctor.last_name }}</option>
                         {% endfor %}
                     </select>
                 </div>
 
                 <div class="mb-3">
-                    <label for="medicine_id" class="form-label">Лекарство</label>
-                    <select class="form-control" id="medicine_id" name="medicine_id" required>
-                        <option value="" disabled selected>Выберите лекарство</option>
-                        {% for medicine in medicines %}
-                            <option value="{{ medicine.medicine_id }}">{{ medicine.name }}</option>
-                        {% endfor %}
+                    <label for="day_of_week" class="form-label">День недели</label>
+                    <select class="form-control" id="day_of_week" name="day_of_week" required>
+                        <option value="Понедельник" {% if schedule.day_of_week == 'Понедельник' %}selected{% endif %}>Понедельник</option>
+                        <option value="Вторник" {% if schedule.day_of_week == 'Вторник' %}selected{% endif %}>Вторник</option>
+                        <option value="Среда" {% if schedule.day_of_week == 'Среда' %}selected{% endif %}>Среда</option>
+                        <option value="Четверг" {% if schedule.day_of_week == 'Четверг' %}selected{% endif %}>Четверг</option>
+                        <option value="Пятница" {% if schedule.day_of_week == 'Пятница' %}selected{% endif %}>Пятница</option>
+                        <option value="Суббота" {% if schedule.day_of_week == 'Суббота' %}selected{% endif %}>Суббота</option>
+                        <option value="Воскресенье" {% if schedule.day_of_week == 'Воскресенье' %}selected{% endif %}>Воскресенье</option>
                     </select>
                 </div>
 
                 <div class="mb-3">
-                    <label for="dosage" class="form-label">Дозировка</label>
-                    <input type="text" class="form-control" id="dosage" name="dosage" required>
+                    <label for="start_time" class="form-label">Начало</label>
+                    <input type="time" class="form-control" id="start_time" name="start_time" required value="{{ schedule.start_time.strftime('%H:%M') }}">
                 </div>
 
                 <div class="mb-3">
-                    <label for="duration" class="form-label">Продолжительность</label>
-                    <input type="text" class="form-control" id="duration" name="duration" required>
+                    <label for="end_time" class="form-label">Конец</label>
+                    <input type="time" class="form-control" id="end_time" name="end_time" required value="{{ schedule.end_time.strftime('%H:%M') }}">
                 </div>
 
-                <div class="mb-3">
-                    <label for="instructions" class="form-label">Инструкции</label>
-                    <textarea class="form-control" id="instructions" name="instructions" rows="3" required></textarea>
-                </div>
-
-                <button type="submit" class="btn btn-primary w-100">Добавить рецепт</button>
+                <button type="submit" class="btn btn-primary w-100">Сохранить изменения</button>
             </form>
         </div>
     </div>
