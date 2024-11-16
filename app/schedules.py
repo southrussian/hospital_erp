@@ -5,8 +5,14 @@ from models import *
 def view_schedule(app):
     @app.route('/view_schedule')
     def view_schedule():
-        schedules = Schedule.query.all()
-        return render_template('view_schedule.html', schedules=schedules)
+        doctor_id = request.args.get('doctor_id')
+        if doctor_id:
+            schedules = Schedule.query.filter_by(doctor_id=doctor_id).all()
+        else:
+            schedules = Schedule.query.all()
+        doctors = Doctor.query.all()
+        return render_template('view_schedule.html', schedules=schedules, doctors=doctors, selected_doctor_id=doctor_id)
+
 
 
 def add_schedule(app):
