@@ -5,7 +5,7 @@ from models import *
 def view_medical_records(app):
     @app.route('/view_medical_records')
     def view_medical_records():
-        records = Operation.query.all()
+        records = MedicalRecord.query.all()
         return render_template('view_medical_records.html', records=records)
 
 

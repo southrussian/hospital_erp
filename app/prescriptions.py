@@ -1,5 +1,6 @@
 from flask import render_template, redirect, url_for, flash, request
-from models import *
+from models import Prescription, MedicineInventory, MedicalRecord, Medicine, db
+from datetime import datetime
 
 
 def view_prescriptions(app):
@@ -31,9 +32,16 @@ def add_prescription(app):
             )
 
             try:
-                db.session.add(prescription)
-                db.session.commit()
-                flash('Рецепт успешно добавлен!', 'success')
+                # Найти запись в инвентаре и уменьшить количество
+                inventory = MedicineInventory.query.filter_by(medicine_id=medicine_id).first()
+                if inventory and inventory.quantity >= int(dosage):
+                    inventory.quantity -= int(dosage)
+                    inventory.last_updated = datetime.utcnow()
+                    db.session.add(prescription)
+                    db.session.commit()
+                    flash('Рецепт успешно добавлен!', 'success')
+                else:
+                    flash('Недостаточно лекарств на складе!', 'danger')
             except Exception as e:
                 db.session.rollback()
                 flash(f'Произошла ошибка: {e}', 'danger')
@@ -43,7 +51,6 @@ def add_prescription(app):
         return render_template('add_prescription.html',
                                medical_records=medical_records, medicines=medicines)
 
-
 def edit_prescription(app):
     @app.route('/edit_prescription/<int:prescription_id>', methods=['GET', 'POST'])
     def edit_prescription(prescription_id):
@@ -52,15 +59,27 @@ def edit_prescription(app):
         medicines = Medicine.query.all()
 
         if request.method == 'POST':
-            prescription.record_id = request.form['record_id']
-            prescription.medicine_id = request.form['medicine_id']
-            prescription.dosage = request.form['dosage']
-            prescription.duration = request.form['duration']
-            prescription.instructions = request.form['instructions']
+            record_id = request.form['record_id']
+            medicine_id = request.form['medicine_id']
+            dosage = request.form['dosage']
+            duration = request.form['duration']
+            instructions = request.form['instructions']
 
             try:
-                db.session.commit()
-                flash('Рецепт успешно обновлен!', 'success')
+                # Найти запись в инвентаре и уменьшить количество
+                inventory = MedicineInventory.query.filter_by(medicine_id=medicine_id).first()
+                if inventory and inventory.quantity >= int(dosage):
+                    inventory.quantity -= int(dosage)
+                    inventory.last_updated = datetime.utcnow()
+                    prescription.record_id = record_id
+                    prescription.medicine_id = medicine_id
+                    prescription.dosage = dosage
+                    prescription.duration = duration
+                    prescription.instructions = instructions
+                    db.session.commit()
+                    flash('Рецепт успешно обновлен!', 'success')
+                else:
+                    flash('Недостаточно лекарств на складе!', 'danger')
             except Exception as e:
                 db.session.rollback()
                 flash(f'Произошла ошибка: {e}', 'danger')
@@ -78,8 +97,8 @@ def delete_prescription(app):
         try:
             db.session.delete(prescription)
             db.session.commit()
-            flash("Doctor deleted successfully!", "success")
+            flash("Рецепт успешно удален!", "success")
         except Exception as e:
             db.session.rollback()
-            flash(f"An error occurred: {e}", "danger")
+            flash(f"Произошла ошибка: {e}", "danger")
         return redirect(url_for('view_prescriptions'))
