@@ -2,6 +2,8 @@ from models import *
 from flask import Flask, render_template, redirect, url_for, flash, session
 import logging
 from logging.handlers import RotatingFileHandler
+import psycopg2
+import os
 
 from users import register, login, logout, view_users
 from patients import view_patients, add_patient, edit_patient, delete_patient
@@ -19,7 +21,7 @@ from prescriptions import view_prescriptions, add_prescription, edit_prescriptio
 from medical_records import view_medical_records, add_medical_record, edit_medical_record, delete_medical_record
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///hospital.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgers:5896@localhost/hospital'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = 'oxxxymiron'
 
@@ -97,6 +99,16 @@ view_medical_records(app)
 add_medical_record(app)
 edit_medical_record(app)
 delete_medical_record(app)
+
+
+def db_connection():
+    conn = psycopg2.connect(
+        host='localhost',
+        database='hospital',
+        user=os.environ['DB_USERNAME'],
+        password=os.environ['DB_PASSWORD']
+    )
+    return conn
 
 
 @app.route('/')

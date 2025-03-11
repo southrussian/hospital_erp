@@ -7,7 +7,7 @@ from datetime import datetime
 def view_patients(app):
     @app.route('/view_patients')
     def view_patients():
-        sort_order = request.args.get('sort', 'asc')  # Default to ascending order
+        sort_order = request.args.get('sort', 'asc')  # по умолчанию в порядке убывания
         if sort_order == 'asc':
             patients = Patient.query.order_by(Patient.last_name.asc()).all()
         else:

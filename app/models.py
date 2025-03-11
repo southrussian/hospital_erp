@@ -44,12 +44,11 @@ class Department(db.Model):
     phone_number = db.Column(db.String(20))
 
 
-# Patient model
 class Patient(db.Model):
     __tablename__ = 'patients'
     patient_id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(50), nullable=False)
-    middle_name = db.Column(db.String(50))  # Отчество
+    middle_name = db.Column(db.String(50))
     last_name = db.Column(db.String(50), nullable=False)
     birth_date = db.Column(db.Date, nullable=False)
     gender = db.Column(db.String(10))
@@ -121,7 +120,7 @@ class Operation(db.Model):
     patient_id = db.Column(db.Integer, db.ForeignKey('patients.patient_id'), nullable=False)
     doctor_id = db.Column(db.Integer, db.ForeignKey('doctors.doctor_id'), nullable=False)
     operation_type = db.Column(db.String(100))
-    operation_date = db.Column(db.DateTime, default=datetime.utcnow)
+    operation_date = db.Column(db.DateTime, default=datetime.now())
     duration = db.Column(db.Integer)
     outcome = db.Column(db.String(150))
 
