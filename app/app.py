@@ -11,7 +11,7 @@ from doctors import view_doctors, add_doctor, edit_doctor, delete_doctor
 from departments import view_departments, add_department, edit_department, delete_department
 from rooms import view_rooms, add_room, edit_room, delete_room
 from schedules import view_schedule, add_schedule, edit_schedule, delete_schedule
-from admissions import view_admissions, add_admission, edit_admission, delete_admission
+from admissions import view_admissions, add_admission, edit_admission, delete_admission, analyze_admissions
 from medicines import view_medicine, add_medicine, edit_medicine, delete_medicine
 from medicine_invetory import (view_medicine_inventory, add_medicine_inventory, edit_medicine_inventory,
                                delete_medicine_inventory)
@@ -21,7 +21,7 @@ from prescriptions import view_prescriptions, add_prescription, edit_prescriptio
 from medical_records import view_medical_records, add_medical_record, edit_medical_record, delete_medical_record
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgers:5896@localhost/hospital'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///hospital.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = 'oxxxymiron'
 
@@ -69,6 +69,7 @@ view_admissions(app)
 add_admission(app)
 edit_admission(app)
 delete_admission(app)
+analyze_admissions(app)
 
 view_medicine(app)
 add_medicine(app)
