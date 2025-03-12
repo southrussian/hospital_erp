@@ -19,6 +19,7 @@ from beds import view_beds, add_bed, edit_bed, delete_bed
 from operations import view_operations, add_operation, edit_operation, delete_operation
 from prescriptions import view_prescriptions, add_prescription, edit_prescription, delete_prescription
 from medical_records import view_medical_records, add_medical_record, edit_medical_record, delete_medical_record
+from flask_migrate import Migrate
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///hospital.db'
@@ -34,6 +35,7 @@ app.logger.addHandler(file_handler)
 app.logger.info("Приложение Flask запущено.")
 
 db.init_app(app)
+migrate = Migrate(app, db)
 
 register(app)
 login(app)

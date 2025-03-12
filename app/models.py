@@ -63,13 +63,13 @@ class Patient(db.Model):
     room = db.relationship('Room', backref='patients')
 
 
-# Room model
 class Room(db.Model):
     __tablename__ = 'rooms'
     room_id = db.Column(db.Integer, primary_key=True)
     room_number = db.Column(db.String(10), unique=True, nullable=False)
     department_id = db.Column(db.Integer, db.ForeignKey('departments.department_id'), nullable=False)
     capacity = db.Column(db.Integer, nullable=False)
+    beds = db.relationship('Bed', backref='room', lazy=True)  # Связь с койками
 
     department = db.relationship('Department', backref='rooms')
 
