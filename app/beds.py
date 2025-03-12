@@ -1,5 +1,5 @@
 from flask import render_template, redirect, url_for, flash, request
-from models import *
+from .models import *
 
 
 def view_beds(app):
@@ -17,6 +17,13 @@ def add_bed(app):
 
         if request.method == 'POST':
             room_id = request.form['room_id']
+            room = Room.query.get(room_id)
+
+            # Проверка доступности мест
+            if room.is_full():
+                flash('Палата полностью заполнена! Невозможно добавить койку.', 'danger')
+                return redirect(url_for('add_bed'))
+
             patient_id = request.form.get('patient_id')  # Пациент может быть не назначен
             status = 'occupied' if patient_id else 'free'
 
@@ -47,8 +54,16 @@ def edit_bed(app):
         patients = Patient.query.all()
 
         if request.method == 'POST':
-            bed.room_id = request.form['room_id']
-            bed.patient_id = request.form.get('patient_id')  # Пациент может быть не назначен
+            new_room_id = request.form['room_id']
+            new_room = Room.query.get(new_room_id)
+
+            # Если меняем палату, проверяем доступность мест
+            if bed.room_id != int(new_room_id) and new_room.is_full():
+                flash('Новая палата полностью заполнена!', 'danger')
+                return redirect(url_for('edit_bed', bed_id=bed_id))
+
+            bed.room_id = new_room_id
+            bed.patient_id = request.form.get('patient_id')
             bed.status = 'occupied' if bed.patient_id else 'free'
 
             try:

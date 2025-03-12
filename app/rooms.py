@@ -1,5 +1,5 @@
 from flask import render_template, redirect, url_for, flash, request
-from models import *
+from .models import *
 
 
 def view_rooms(app):
@@ -47,7 +47,7 @@ def edit_room(app):
             try:
                 db.session.commit()
                 flash("Room updated successfully!", "success")
-                return redirect(url_for('view_room'))
+                return redirect(url_for('view_rooms'))
             except Exception as e:
                 db.session.rollback()
                 flash(f"An error occurred: {e}", "danger")
@@ -59,11 +59,18 @@ def delete_room(app):
     @app.route('/delete_room/<int:room_id>', methods=['POST'])
     def delete_room(room_id):
         room = Room.query.get_or_404(room_id)
+
+        # Проверка, есть ли койки в палате
+        if len(room.beds) > 0:
+            flash('Невозможно удалить палату с койками!', 'danger')
+            return redirect(url_for('view_rooms'))
+
         try:
             db.session.delete(room)
             db.session.commit()
-            flash("Room deleted successfully!", "success")
+            flash('Палата успешно удалена!', 'success')
         except Exception as e:
             db.session.rollback()
-            flash(f"An error occurred: {e}", "danger")
+            flash(f'Произошла ошибка: {e}', 'danger')
+
         return redirect(url_for('view_rooms'))

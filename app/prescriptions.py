@@ -1,5 +1,5 @@
 from flask import render_template, redirect, url_for, flash, request
-from models import Prescription, MedicineInventory, MedicalRecord, Medicine, db
+from .models import Prescription, MedicineInventory, MedicalRecord, Medicine, db
 from datetime import datetime
 
 

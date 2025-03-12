@@ -1,6 +1,7 @@
 from flask import render_template, redirect, url_for, flash, request
-from models import *
+from .models import *
 from datetime import datetime
+
 
 def view_medicine_inventory(app):
     @app.route('/view_medicine_inventory')

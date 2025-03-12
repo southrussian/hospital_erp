@@ -1,12 +1,8 @@
 from flask import render_template, redirect, url_for, flash, request
-from models import *
+from .models import *
 from datetime import datetime
-import matplotlib.pyplot as plt
-import io
-import base64
 from collections import Counter
 import plotly.express as px
-
 
 
 def view_admissions(app):
@@ -121,46 +117,40 @@ def analyze_admissions(app):
         admission_dates = list(admission_counts.keys())
         admission_counts = list(admission_counts.values())
 
-        # Count reasons for admission
         reason_counts = Counter(reasons)
         reasons = list(reason_counts.keys())
         reason_counts = list(reason_counts.values())
 
-        # Count admissions per doctor
         doctor_counts = Counter(doctors)
         doctors = list(doctor_counts.keys())
         doctor_counts = list(doctor_counts.values())
 
-        # Count admissions per hour
         hour_counts = Counter(admission_hours)
         hours = list(hour_counts.keys())
         hour_counts = list(hour_counts.values())
 
-        # Calculate average length of stay
-        avg_length_of_stay = sum(lengths_of_stay) / len(lengths_of_stay) if lengths_of_stay else 0
-
-        # Count admissions per age group
         age_groups = ['0-10', '11-20', '21-30', '31-40', '41-50', '51-60', '61-70', '71-80', '81+']
         age_counts = Counter([age_groups[min(patient_age // 10, 8)] for patient_age in patient_ages])
         age_groups = list(age_counts.keys())
         age_counts = list(age_counts.values())
 
-        # Count admissions by gender
         gender_counts = Counter(patient_genders)
         genders = list(gender_counts.keys())
         gender_counts = list(gender_counts.values())
 
-
-        # Generate graphs
-        fig1 = px.bar(x=admission_dates, y=admission_counts, labels={'x': 'Date', 'y': 'Number of Admissions'}, title='Admissions per Day')
+        fig1 = px.bar(x=admission_dates, y=admission_counts, labels={'x': 'Date', 'y': 'Number of Admissions'},
+                      title='Admissions per Day')
         fig2 = px.pie(names=reasons, values=reason_counts, title='Reasons for Admission')
-        fig3 = px.bar(x=doctors, y=doctor_counts, labels={'x': 'Doctor', 'y': 'Number of Admissions'}, title='Admissions per Doctor')
-        fig4 = px.bar(x=hours, y=hour_counts, labels={'x': 'Hour', 'y': 'Number of Admissions'}, title='Admissions by Time of Day')
-        fig5 = px.line(x=list(range(len(lengths_of_stay))), y=lengths_of_stay, labels={'x': 'Admission', 'y': 'Length of Stay (days)'}, title='Average Length of Stay')
-        fig6 = px.bar(x=age_groups, y=age_counts, labels={'x': 'Age Group', 'y': 'Number of Admissions'}, title='Admissions by Age Group')
+        fig3 = px.bar(x=doctors, y=doctor_counts, labels={'x': 'Doctor', 'y': 'Number of Admissions'},
+                      title='Admissions per Doctor')
+        fig4 = px.bar(x=hours, y=hour_counts, labels={'x': 'Hour', 'y': 'Number of Admissions'},
+                      title='Admissions by Time of Day')
+        fig5 = px.line(x=list(range(len(lengths_of_stay))), y=lengths_of_stay,
+                       labels={'x': 'Admission', 'y': 'Length of Stay (days)'}, title='Average Length of Stay')
+        fig6 = px.bar(x=age_groups, y=age_counts, labels={'x': 'Age Group', 'y': 'Number of Admissions'},
+                      title='Admissions by Age Group')
         fig7 = px.pie(names=genders, values=gender_counts, title='Admissions by Gender')
 
-        # Convert graphs to HTML
         graph1_html = fig1.to_html(full_html=False)
         graph2_html = fig2.to_html(full_html=False)
         graph3_html = fig3.to_html(full_html=False)
@@ -169,4 +159,6 @@ def analyze_admissions(app):
         graph6_html = fig6.to_html(full_html=False)
         graph7_html = fig7.to_html(full_html=False)
 
-        return render_template('analyze_admissions.html', graph1=graph1_html, graph2=graph2_html, graph3=graph3_html, graph4=graph4_html, graph5=graph5_html, graph6=graph6_html, graph7=graph7_html)
+        return render_template('analyze_admissions.html', graph1=graph1_html, graph2=graph2_html,
+                               graph3=graph3_html, graph4=graph4_html, graph5=graph5_html, graph6=graph6_html,
+                               graph7=graph7_html)

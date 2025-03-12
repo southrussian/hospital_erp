@@ -69,9 +69,16 @@ class Room(db.Model):
     room_number = db.Column(db.String(10), unique=True, nullable=False)
     department_id = db.Column(db.Integer, db.ForeignKey('departments.department_id'), nullable=False)
     capacity = db.Column(db.Integer, nullable=False)
-    beds = db.relationship('Bed', backref='room', lazy=True)  # Связь с койками
 
+    # Связь с отделением
     department = db.relationship('Department', backref='rooms')
+
+    # Связь с койками
+    beds = db.relationship('Bed', backref='room', lazy=True, cascade='all, delete-orphan')
+
+    # Метод для проверки доступности мест
+    def is_full(self):
+        return len(self.beds) >= self.capacity
 
 
 class Bed(db.Model):
@@ -79,26 +86,25 @@ class Bed(db.Model):
     bed_id = db.Column(db.Integer, primary_key=True)
     room_id = db.Column(db.Integer, db.ForeignKey('rooms.room_id'), nullable=False)
     patient_id = db.Column(db.Integer, db.ForeignKey('patients.patient_id'), nullable=True)
-    status = db.Column(db.String(20), nullable=False, default="free")  # "free" or "occupied"
+    status = db.Column(db.String(20), default='free')  # free или occupied
 
-    room = db.relationship('Room', backref='beds')
-    patient = db.relationship('Patient', backref='bed', uselist=False)
+    patient = db.relationship('Patient', backref='bed')
 
 
 class Admission(db.Model):
     __tablename__ = 'admissions'
     admission_id = db.Column(db.Integer, primary_key=True)
     patient_id = db.Column(db.Integer, db.ForeignKey('patients.patient_id'), nullable=False)
-    admission_date = db.Column(db.DateTime, default=datetime.utcnow)
-    discharge_date = db.Column(db.DateTime)
-    reason_for_admission = db.Column(db.String(150))
-    admitted_by = db.Column(db.Integer, db.ForeignKey('doctors.doctor_id'))
+    admission_date = db.Column(db.DateTime, nullable=False)
+    discharge_date = db.Column(db.DateTime, nullable=True)
+    reason_for_admission = db.Column(db.String(200), nullable=False)
+    admitted_by = db.Column(db.String(100), nullable=False)
+    bed_id = db.Column(db.Integer, db.ForeignKey('beds.bed_id'), nullable=True)  # Связь с койкой
 
     patient = db.relationship('Patient', backref='admissions')
-    doctor = db.relationship('Doctor', backref='admissions')
+    bed = db.relationship('Bed', backref='admission')
 
 
-# MedicalRecord model
 class MedicalRecord(db.Model):
     __tablename__ = 'medical_records'
     record_id = db.Column(db.Integer, primary_key=True)

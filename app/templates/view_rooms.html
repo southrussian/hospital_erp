@@ -42,10 +42,21 @@
             color: #007aff;
             font-size: 1.2rem;
             padding: 0;
-            margin: 0;
+            margin: 0 5px;
         }
         .action-btn:hover {
             color: #0061d5;
+        }
+        .badge {
+            font-size: 0.9rem;
+            padding: 0.5em 0.75em;
+            border-radius: 10px;
+        }
+        .badge-success {
+            background-color: #28a745;
+        }
+        .badge-danger {
+            background-color: #dc3545;
         }
         @media (max-width: 768px) {
             .table-container {
@@ -62,8 +73,10 @@
 
 <div class="container">
     <h1 class="text-center mb-4">Список палат</h1>
-    <a href="{{ url_for('dashboard') }}" class="btn btn-primary mb-3">Назад на панель управления</a>
-    <a href="{{ url_for('add_room') }}" class="btn btn-primary mb-3">Добавить палату</a>
+    <div class="d-flex justify-content-between mb-3">
+        <a href="{{ url_for('dashboard') }}" class="btn btn-primary">Назад на панель управления</a>
+        <a href="{{ url_for('add_room') }}" class="btn btn-primary">Добавить палату</a>
+    </div>
     <div class="table-container">
         <table class="table table-striped">
             <thead>
@@ -72,6 +85,8 @@
                     <th>Номер палаты</th>
                     <th>Отделение</th>
                     <th>Вместимость</th>
+                    <th>Занято/Всего</th>
+                    <th>Статус</th>
                     <th>Действия</th>
                 </tr>
             </thead>
@@ -82,12 +97,20 @@
                     <td>{{ room.room_number }}</td>
                     <td>{{ room.department.name }}</td>
                     <td>{{ room.capacity }}</td>
+                    <td>{{ room.beds|length }}/{{ room.capacity }}</td>
                     <td>
-                        <a href="{{ url_for('edit_room', room_id=room.room_id) }}" class="action-btn">
+                        {% if room.beds|length >= room.capacity %}
+                            <span class="badge badge-danger">Заполнена</span>
+                        {% else %}
+                            <span class="badge badge-success">Есть места</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ url_for('edit_room', room_id=room.room_id) }}" class="action-btn" title="Редактировать">
                             <i class="fas fa-edit"></i>
                         </a>
                         <form action="{{ url_for('delete_room', room_id=room.room_id) }}" method="POST" style="display:inline;">
-                            <button type="submit" class="action-btn" onclick="return confirm('Вы уверены, что хотите удалить эту палату?')">
+                            <button type="submit" class="action-btn" title="Удалить" onclick="return confirm('Вы уверены, что хотите удалить эту палату?')">
                                 <i class="fas fa-trash-alt"></i>
                             </button>
                         </form>
