@@ -2,3 +2,4 @@ flask
 wtforms
 werkzeug
 plotly
+sqlalchemy
