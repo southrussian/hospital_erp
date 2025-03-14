@@ -4,7 +4,8 @@ from logging.handlers import RotatingFileHandler
 from models import *
 
 from users import register, login, logout, view_users
-from patients import view_patients, add_patient, edit_patient, delete_patient
+from patients import (setup_view_patients_routes, setup_add_patient_routes, setup_edit_patient_routes,
+                      setup_delete_patient_routes)
 from doctors import (setup_view_doctors_routes, setup_add_doctor_routes, setup_edit_doctor_routes,
                      setup_delete_doctor_routes)
 from departments import (setup_view_departments_routes, setup_add_department_routes, setup_edit_department_routes,
@@ -42,10 +43,10 @@ login(app)
 logout(app)
 view_users(app)
 
-view_patients(app)
-add_patient(app)
-edit_patient(app)
-delete_patient(app)
+setup_view_patients_routes(app)
+setup_add_patient_routes(app)
+setup_edit_patient_routes(app)
+setup_delete_patient_routes(app)
 
 setup_view_doctors_routes(app)
 setup_add_doctor_routes(app)

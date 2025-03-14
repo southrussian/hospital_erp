@@ -70,8 +70,6 @@
                 <tr>
                     <th>ID</th>
                     <th>Название</th>
-                    <th>Местоположение</th>
-                    <th>Номер телефона</th>
                     <th>Действия</th>
                 </tr>
             </thead>
@@ -80,8 +78,6 @@
                 <tr>
                     <td>{{ department.department_id }}</td>
                     <td>{{ department.name }}</td>
-                    <td>{{ department.location }}</td>
-                    <td>{{ department.phone_number }}</td>
                     <td>
                         <a href="{{ url_for('edit_department', department_id=department.department_id) }}" class="action-btn">
                             <i class="fas fa-edit"></i>

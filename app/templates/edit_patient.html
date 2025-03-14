@@ -134,15 +134,6 @@
                     <input type="text" class="form-control" id="oms_number" name="oms_number" required value="{{ patient.oms_number }}">
                 </div>
 
-                <div class="mb-3">
-                    <label for="room_id" class="form-label">Номер комнаты</label>
-                    <select class="form-control" id="room_id" name="room_id" required>
-                        {% for room in rooms %}
-                            <option value="{{ room.room_id }}" {% if room.room_id == patient.room_id %}selected{% endif %}>{{ room.room_number }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
                 <button type="submit" class="btn btn-primary w-100">Сохранить изменения</button>
             </form>
         </div>
