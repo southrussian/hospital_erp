@@ -5,8 +5,10 @@ from models import *
 
 from users import register, login, logout, view_users
 from patients import view_patients, add_patient, edit_patient, delete_patient
-from doctors import view_doctors, add_doctor, edit_doctor, delete_doctor
-from departments import view_departments, add_department, edit_department, delete_department
+from doctors import (setup_view_doctors_routes, setup_add_doctor_routes, setup_edit_doctor_routes,
+                     setup_delete_doctor_routes)
+from departments import (setup_view_departments_routes, setup_add_department_routes, setup_edit_department_routes,
+                         setup_delete_department_routes)
 from rooms import view_rooms, add_room, edit_room, delete_room
 from schedules import view_schedule, add_schedule, edit_schedule, delete_schedule
 from admissions import view_admissions, add_admission, edit_admission, delete_admission, analyze_admissions
@@ -45,15 +47,15 @@ add_patient(app)
 edit_patient(app)
 delete_patient(app)
 
-view_doctors(app)
-add_doctor(app)
-edit_doctor(app)
-delete_doctor(app)
+setup_view_doctors_routes(app)
+setup_add_doctor_routes(app)
+setup_edit_doctor_routes(app)
+setup_delete_doctor_routes(app)
 
-view_departments(app)
-add_department(app)
-edit_department(app)
-delete_department(app)
+setup_view_departments_routes(app)
+setup_add_department_routes(app)
+setup_edit_department_routes(app)
+setup_delete_department_routes(app)
 
 view_rooms(app)
 add_room(app)
