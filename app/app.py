@@ -16,7 +16,7 @@ from admissions import view_admissions, add_admission, edit_admission, delete_ad
 from medicines import view_medicine, add_medicine, edit_medicine, delete_medicine
 from medicine_invetory import (view_medicine_inventory, add_medicine_inventory, edit_medicine_inventory,
                                delete_medicine_inventory)
-from beds import view_beds, add_bed, edit_bed, delete_bed
+from beds import setup_view_beds_routes, setup_add_bed_routes, setup_edit_bed_routes, setup_delete_bed_routes
 from operations import view_operations, add_operation, edit_operation, delete_operation
 from prescriptions import view_prescriptions, add_prescription, edit_prescription, delete_prescription
 from medical_records import view_medical_records, add_medical_record, edit_medical_record, delete_medical_record
@@ -84,10 +84,10 @@ add_medicine_inventory(app)
 edit_medicine_inventory(app)
 delete_medicine_inventory(app)
 
-view_beds(app)
-add_bed(app)
-edit_bed(app)
-delete_bed(app)
+setup_view_beds_routes(app)
+setup_add_bed_routes(app)
+setup_edit_bed_routes(app)
+setup_delete_bed_routes(app)
 
 view_operations(app)
 add_operation(app)

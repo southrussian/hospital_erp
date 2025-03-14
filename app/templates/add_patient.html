@@ -135,15 +135,6 @@
                     <input type="text" class="form-control" id="oms_number" name="oms_number" required placeholder="Введите номер ОМС">
                 </div>
 
-                <div class="mb-3">
-                    <label for="room_id" class="form-label">Номер комнаты</label>
-                    <select class="form-control" id="room_id" name="room_id" required>
-                        <option value="" disabled selected>Выберите комнату</option>
-                        {% for room in rooms %}
-                            <option value="{{ room.room_id }}">{{ room.room_number }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
 
                 <button type="submit" class="btn btn-primary w-100">Добавить пациента</button>
             </form>

@@ -1,92 +1,140 @@
 from flask import render_template, redirect, url_for, flash, request
+from sqlalchemy.exc import IntegrityError
 from models import *
 
 
-def view_beds(app):
+def setup_view_beds_routes(app):
     @app.route('/view_beds')
     def view_beds():
-        beds = Bed.query.all()
-        return render_template('view_beds.html', beds=beds)
+        try:
+            # Загружаем койки с информацией о палатах и пациентах
+            beds = Bed.query.options(
+                db.joinedload(Bed.room),
+                db.joinedload(Bed.patient)
+            ).all()
+            return render_template('view_beds.html', beds=beds)
+        except Exception as e:
+            flash(f"Ошибка при загрузке данных: {str(e)}", "danger")
+            return redirect(url_for('index'))
 
 
-def add_bed(app):
+def setup_add_bed_routes(app):
     @app.route('/add_bed', methods=['GET', 'POST'])
     def add_bed():
         rooms = Room.query.all()
         patients = Patient.query.filter_by(bed=None).all()  # Только пациенты без кроватей
 
         if request.method == 'POST':
-            room_id = request.form['room_id']
-            room = Room.query.get(room_id)
-
-            # Проверка доступности мест
-            if room.is_full():
-                flash('Палата полностью заполнена! Невозможно добавить койку.', 'danger')
-                return redirect(url_for('add_bed'))
-
-            patient_id = request.form.get('patient_id')  # Пациент может быть не назначен
-            status = 'occupied' if patient_id else 'free'
-
-            bed = Bed(
-                room_id=room_id,
-                patient_id=patient_id,
-                status=status
-            )
-
             try:
+                # Валидация данных
+                room_id = int(request.form['room_id'])
+                patient_id = request.form.get('patient_id')  # Может быть None
+
+                # Проверка доступности мест в палате
+                room = Room.query.get_or_404(room_id)
+                if room.available_beds() <= 0:
+                    flash('Палата полностью заполнена! Невозможно добавить койку.', 'danger')
+                    return redirect(url_for('add_bed'))
+
+                # Проверка, что пациент не привязан к другой койке
+                if patient_id:
+                    existing_bed = Bed.query.filter_by(patient_id=patient_id).first()
+                    if existing_bed:
+                        flash('Этот пациент уже привязан к другой койке!', 'danger')
+                        return redirect(url_for('add_bed'))
+
+                # Создание койки
+                bed = Bed(
+                    room_id=room_id,
+                    patient_id=patient_id
+                )
+
                 db.session.add(bed)
                 db.session.commit()
                 flash('Койка успешно добавлена!', 'success')
+                return redirect(url_for('view_beds'))
+
+            except ValueError:
+                db.session.rollback()
+                flash("Некорректные данные в форме", "danger")
+            except IntegrityError:
+                db.session.rollback()
+                flash("Ошибка целостности данных", "danger")
             except Exception as e:
                 db.session.rollback()
-                flash(f'Произошла ошибка: {e}', 'danger')
-
-            return redirect(url_for('add_bed'))
+                flash(f"Ошибка при добавлении: {str(e)}", "danger")
 
         return render_template('add_bed.html', rooms=rooms, patients=patients)
 
 
-def edit_bed(app):
+def setup_edit_bed_routes(app):
     @app.route('/edit_bed/<int:bed_id>', methods=['GET', 'POST'])
     def edit_bed(bed_id):
         bed = Bed.query.get_or_404(bed_id)
         rooms = Room.query.all()
-        patients = Patient.query.all()
+        patients = Patient.query.filter_by(bed=None).all()
 
         if request.method == 'POST':
-            new_room_id = request.form['room_id']
-            new_room = Room.query.get(new_room_id)
-
-            # Если меняем палату, проверяем доступность мест
-            if bed.room_id != int(new_room_id) and new_room.is_full():
-                flash('Новая палата полностью заполнена!', 'danger')
-                return redirect(url_for('edit_bed', bed_id=bed_id))
-
-            bed.room_id = new_room_id
-            bed.patient_id = request.form.get('patient_id')
-            bed.status = 'occupied' if bed.patient_id else 'free'
-
             try:
+                new_room_id = int(request.form['room_id'])
+                new_patient_id = request.form.get('patient_id')  # Может быть None
+
+                # Проверка доступности мест в новой палате
+                if bed.room_id != new_room_id:
+                    new_room = Room.query.get_or_404(new_room_id)
+                    if new_room.available_beds() <= 0:
+                        flash('Новая палата полностью заполнена!', 'danger')
+                        return redirect(url_for('edit_bed', bed_id=bed_id))
+
+                # Проверка, что новый пациент не привязан к другой койке
+                if new_patient_id and new_patient_id != bed.patient_id:
+                    existing_bed = Bed.query.filter_by(patient_id=new_patient_id).first()
+                    if existing_bed:
+                        flash('Этот пациент уже привязан к другой койке!', 'danger')
+                        return redirect(url_for('edit_bed', bed_id=bed_id))
+
+                # Обновление данных
+                bed.room_id = new_room_id
+                bed.patient_id = new_patient_id
+
                 db.session.commit()
                 flash('Койка успешно обновлена!', 'success')
+                return redirect(url_for('view_beds'))
+
+            except ValueError:
+                db.session.rollback()
+                flash("Некорректные данные в форме", "danger")
+            except IntegrityError:
+                db.session.rollback()
+                flash("Ошибка целостности данных", "danger")
             except Exception as e:
                 db.session.rollback()
-                flash(f'Произошла ошибка: {e}', 'danger')
+                flash(f"Ошибка при обновлении: {str(e)}", "danger")
 
-            return redirect(url_for('view_beds'))
+        return render_template('edit_bed.html',
+                               rooms=rooms,
+                               patients=patients,
+                               bed=bed)
 
-        return render_template('edit_bed.html', rooms=rooms, patients=patients, bed=bed)
 
-
-def delete_bed(app):
+def setup_delete_bed_routes(app):
     @app.route('/delete_bed/<int:bed_id>', methods=['POST'])
     def delete_bed(bed_id):
         bed = Bed.query.get_or_404(bed_id)
         try:
+            # Проверка, что койка не занята
+            if bed.patient_id:
+                flash('Невозможно удалить занятую койку!', 'danger')
+                return redirect(url_for('view_beds'))
+
             db.session.delete(bed)
             db.session.commit()
-            flash("Bed deleted successfully!", "success")
+            flash('Койка успешно удалена!', 'success')
+        except IntegrityError as e:
+            db.session.rollback()
+            flash(f"Ошибка целостности данных: {str(e)}", "danger")
         except Exception as e:
             db.session.rollback()
-            flash(f"An error occurred: {e}", "danger")
+            flash(f"Ошибка при удалении: {str(e)}", "danger")
+
         return redirect(url_for('view_beds'))
