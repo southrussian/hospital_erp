@@ -1,28 +1,26 @@
 from flask import Flask, render_template, redirect, url_for, flash, session
 import logging
 from logging.handlers import RotatingFileHandler
-import psycopg2
-import os
-from .models import db
+from models import *
 
-from .users import register, login, logout, view_users
-from .patients import view_patients, add_patient, edit_patient, delete_patient
-from .doctors import view_doctors, add_doctor, edit_doctor, delete_doctor
-from .departments import view_departments, add_department, edit_department, delete_department
-from .rooms import view_rooms, add_room, edit_room, delete_room
-from .schedules import view_schedule, add_schedule, edit_schedule, delete_schedule
-from .admissions import view_admissions, add_admission, edit_admission, delete_admission, analyze_admissions
-from .medicines import view_medicine, add_medicine, edit_medicine, delete_medicine
-from .medicine_invetory import (view_medicine_inventory, add_medicine_inventory, edit_medicine_inventory,
+from users import register, login, logout, view_users
+from patients import view_patients, add_patient, edit_patient, delete_patient
+from doctors import view_doctors, add_doctor, edit_doctor, delete_doctor
+from departments import view_departments, add_department, edit_department, delete_department
+from rooms import view_rooms, add_room, edit_room, delete_room
+from schedules import view_schedule, add_schedule, edit_schedule, delete_schedule
+from admissions import view_admissions, add_admission, edit_admission, delete_admission, analyze_admissions
+from medicines import view_medicine, add_medicine, edit_medicine, delete_medicine
+from medicine_invetory import (view_medicine_inventory, add_medicine_inventory, edit_medicine_inventory,
                                delete_medicine_inventory)
-from .beds import view_beds, add_bed, edit_bed, delete_bed
-from .operations import view_operations, add_operation, edit_operation, delete_operation
-from .prescriptions import view_prescriptions, add_prescription, edit_prescription, delete_prescription
-from .medical_records import view_medical_records, add_medical_record, edit_medical_record, delete_medical_record
+from beds import view_beds, add_bed, edit_bed, delete_bed
+from operations import view_operations, add_operation, edit_operation, delete_operation
+from prescriptions import view_prescriptions, add_prescription, edit_prescription, delete_prescription
+from medical_records import view_medical_records, add_medical_record, edit_medical_record, delete_medical_record
 from flask_migrate import Migrate
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///hospital.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:5896@localhost:5432/hospital'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = 'oxxxymiron'
 
@@ -36,8 +34,6 @@ app.logger.info("Приложение Flask запущено.")
 
 db.init_app(app)
 migrate = Migrate(app, db)
-
-
 
 register(app)
 login(app)
@@ -104,16 +100,6 @@ view_medical_records(app)
 add_medical_record(app)
 edit_medical_record(app)
 delete_medical_record(app)
-
-
-def db_connection():
-    conn = psycopg2.connect(
-        host='localhost',
-        database='hospital',
-        user=os.environ['DB_USERNAME'],
-        password=os.environ['DB_PASSWORD']
-    )
-    return conn
 
 
 @app.route('/')

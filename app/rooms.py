@@ -1,5 +1,5 @@
 from flask import render_template, redirect, url_for, flash, request
-from .models import *
+from models import *
 
 
 def view_rooms(app):

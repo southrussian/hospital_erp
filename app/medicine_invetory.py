@@ -1,5 +1,5 @@
 from flask import render_template, redirect, url_for, flash, request
-from .models import *
+from models import *
 from datetime import datetime
 
 
@@ -8,6 +8,7 @@ def view_medicine_inventory(app):
     def view_medicine_inventory():
         inventory = MedicineInventory.query.all()
         return render_template('view_medicine_inventory.html', inventory=inventory)
+
 
 def add_medicine_inventory(app):
     @app.route('/add_medicine_inventory', methods=['GET', 'POST'])

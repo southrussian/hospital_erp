@@ -1,6 +1,6 @@
 # routes/patients.py
 from flask import render_template, redirect, url_for, flash, request
-from .models import Patient, Room, db
+from models import Patient, Room, db
 from datetime import datetime
 
 

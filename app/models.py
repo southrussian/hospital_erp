@@ -11,7 +11,7 @@ class User(db.Model):
     user_id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    password_hash = db.Column(db.String(128), nullable=False)
+    password_hash = db.Column(db.String(256), nullable=False)
     role = db.Column(db.String(20), nullable=False, default="doctor")
     created_at = db.Column(db.DateTime, default=datetime.now())
 
@@ -29,23 +29,22 @@ class Doctor(db.Model):
     first_name = db.Column(db.String(50), nullable=False)
     middle_name = db.Column(db.String(50))
     last_name = db.Column(db.String(50), nullable=False)
-    specialization = db.Column(db.String(100), nullable=False)
     birth_date = db.Column(db.Date, nullable=False)
-    phone_number = db.Column(db.String(20))
+    specialization = db.Column(db.String(50))
+    phone_number = db.Column(db.String(11))
     department_id = db.Column(db.Integer, db.ForeignKey('departments.department_id'))
-    license_number = db.Column(db.String(50), unique=True)
 
-    user = db.relationship('User', backref=db.backref('doctor', uselist=False))
-    department = db.relationship('Department', backref='doctors')
+    department = db.relationship(
+        'Department',
+        foreign_keys=[department_id],  # Явное указание ключа
+        backref=db.backref('doctors', lazy=True)
+    )
 
 
 class Department(db.Model):
     __tablename__ = 'departments'
     department_id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    location = db.Column(db.String(100))
-    phone_number = db.Column(db.String(20))
-    head_doctor_id = db.Column(db.Integer, db.ForeignKey('doctors.doctor_id'))
+    name = db.Column(db.String(50), nullable=False)
 
 
 class Patient(db.Model):
@@ -56,11 +55,11 @@ class Patient(db.Model):
     last_name = db.Column(db.String(50), nullable=False)
     birth_date = db.Column(db.Date, nullable=False)
     gender = db.Column(db.String(10), nullable=False)
-    address = db.Column(db.String(150))
-    phone_number = db.Column(db.String(20))
+    address = db.Column(db.String(300))
+    phone_number = db.Column(db.String(11))
     emergency_contact = db.Column(db.String(100))
-    passport_series = db.Column(db.String(10))
-    passport_number = db.Column(db.String(10))
+    passport_series = db.Column(db.String(4))
+    passport_number = db.Column(db.String(6))
     oms_number = db.Column(db.String(16), unique=True, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.now())
 
@@ -93,7 +92,7 @@ class Bed(db.Model):
     )
 
 
-class Admission(db.Model):
+class Admission(db.Model):  # госпитализация
     __tablename__ = 'admissions'
     admission_id = db.Column(db.Integer, primary_key=True)
     patient_id = db.Column(db.Integer, db.ForeignKey('patients.patient_id'), nullable=False)
