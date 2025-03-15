@@ -160,14 +160,14 @@ def setup_analyze_admissions_routes(app):
         try:
             admissions = Admission.query.options(
                 joinedload(Admission.patient),
-                joinedload(Admission.user)
+                joinedload(Admission.user).joinedload(User.doctor)  # Добавляем загрузку Doctor
             ).all()
 
             # Подготовка данных
             admission_data = [{
                 'date': a.admission_date.date(),
                 'reason': a.reason,
-                'doctor': f"{a.user.last_name} {a.user.first_name}",
+                'doctor': f"{a.user.doctor.last_name} {a.user.doctor.first_name}" if a.user.doctor else "Неизвестно",
                 'hour': a.admission_date.hour,
                 'los': (a.discharge_date - a.admission_date).days if a.discharge_date else 0,
                 'age': (a.admission_date.date() - a.patient.birth_date).days // 365,
@@ -211,5 +211,7 @@ def setup_analyze_admissions_routes(app):
             return render_template('analyze_admissions.html', **graphs)
 
         except Exception as e:
-            flash(f"Ошибка анализа данных: {str(e)}", "danger")
-            return redirect(url_for('view_admissions'))
+            # Добавьте логирование ошибки
+            app.logger.error(f"Ошибка анализа: {str(e)}", exc_info=True)
+            flash("Невозможно построить графики. Проверьте данные.", "danger")
+            return render_template('analyze_admissions.html')  # Возвращаем пустую страницу

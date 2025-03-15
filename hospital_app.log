@@ -163,3 +163,25 @@
 [2025-03-15 23:39:51,625] INFO - Приложение Flask запущено.
 [2025-03-15 23:42:09,931] INFO - Доступ к панели управления пользователем ID: 1.
 [2025-03-15 23:44:03,620] INFO - Приложение Flask запущено.
+[2025-03-15 23:45:37,849] INFO - Приложение Flask запущено.
+[2025-03-15 23:45:39,994] ERROR - Ошибка анализа: 'User' object has no attribute 'last_name'
+Traceback (most recent call last):
+  File "/Users/southrussian/PycharmProjects/hospital/app/admissions.py", line 170, in analyze_admissions
+    'doctor': f"{a.user.last_name} {a.user.first_name}",
+                 ^^^^^^^^^^^^^^^^
+AttributeError: 'User' object has no attribute 'last_name'
+[2025-03-15 23:47:54,130] INFO - Приложение Flask запущено.
+[2025-03-15 23:47:54,337] ERROR - Ошибка анализа: type object 'User' has no attribute 'doctor'
+Traceback (most recent call last):
+  File "/Users/southrussian/PycharmProjects/hospital/app/admissions.py", line 163, in analyze_admissions
+    joinedload(Admission.user).joinedload(User.doctor)  # Добавляем загрузку Doctor
+                                          ^^^^^^^^^^^
+AttributeError: type object 'User' has no attribute 'doctor'
+[2025-03-15 23:51:40,161] INFO - Приложение Flask запущено.
+[2025-03-15 23:54:33,163] INFO - Приложение Flask запущено.
+[2025-03-15 23:54:33,760] INFO - Приложение Flask запущено.
+[2025-03-15 23:55:02,009] INFO - Приложение Flask запущено.
+[2025-03-15 23:55:02,578] INFO - Приложение Flask запущено.
+[2025-03-16 00:02:37,699] INFO - Доступ к панели управления пользователем ID: 1.
+[2025-03-16 00:05:24,604] INFO - Доступ к панели управления пользователем ID: 1.
+[2025-03-16 00:05:31,210] INFO - Доступ к панели управления пользователем ID: 1.

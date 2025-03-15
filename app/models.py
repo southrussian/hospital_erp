@@ -15,6 +15,8 @@ class User(db.Model):
     role = db.Column(db.String(20), nullable=False, default="doctor")
     created_at = db.Column(db.DateTime, default=datetime.now())
 
+    doctor = db.relationship('Doctor', back_populates='user', uselist=False)
+
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
@@ -33,6 +35,8 @@ class Doctor(db.Model):
     specialization = db.Column(db.String(50))
     phone_number = db.Column(db.String(11))
     department_id = db.Column(db.Integer, db.ForeignKey('departments.department_id'))
+
+    user = db.relationship('User', back_populates='doctor')
 
     department = db.relationship(
         'Department',
