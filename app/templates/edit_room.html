@@ -95,6 +95,11 @@
                     <input type="number" class="form-control" id="capacity" name="capacity" required value="{{ room.capacity }}">
                 </div>
 
+                <div class="mb-3">
+                    <label for="room_type" class="form-label">Тип</label>
+                    <input type="text" class="form-control" id="room_type" name="room_type" required value="{{ room.room_type }}">
+                </div>
+
                 <button type="submit" class="btn btn-primary w-100">Сохранить изменения</button>
             </form>
         </div>

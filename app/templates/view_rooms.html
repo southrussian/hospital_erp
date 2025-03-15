@@ -58,6 +58,13 @@
         .badge-danger {
             background-color: #dc3545;
         }
+        .table tbody tr {
+            transition: background-color 0.2s;
+        }
+        .table tbody tr:hover {
+            background-color: #f8f9fa;
+            cursor: pointer;
+        }
         @media (max-width: 768px) {
             .table-container {
                 overflow-x: scroll;
@@ -85,6 +92,7 @@
                     <th>Номер палаты</th>
                     <th>Отделение</th>
                     <th>Вместимость</th>
+                    <th>Тип</th>
                     <th>Занято/Всего</th>
                     <th>Статус</th>
                     <th>Действия</th>
@@ -92,30 +100,31 @@
             </thead>
             <tbody>
                 {% for room in rooms %}
-                <tr>
-                    <td>{{ room.room_id }}</td>
-                    <td>{{ room.room_number }}</td>
-                    <td>{{ room.department.name }}</td>
-                    <td>{{ room.capacity }}</td>
-                    <td>{{ room.beds|length }}/{{ room.capacity }}</td>
-                    <td>
-                        {% if room.beds|length >= room.capacity %}
-                            <span class="badge badge-danger">Заполнена</span>
-                        {% else %}
-                            <span class="badge badge-success">Есть места</span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        <a href="{{ url_for('edit_room', room_id=room.room_id) }}" class="action-btn" title="Редактировать">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                        <form action="{{ url_for('delete_room', room_id=room.room_id) }}" method="POST" style="display:inline;">
-                            <button type="submit" class="action-btn" title="Удалить" onclick="return confirm('Вы уверены, что хотите удалить эту палату?')">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                        </form>
-                    </td>
-                </tr>
+                    <tr onclick="window.location='{{ url_for('room_details', room_id=room.room_id) }}'" style="cursor: pointer;">
+                        <td>{{ room.room_id }}</td>
+                        <td>{{ room.room_number }}</td>
+                        <td>{{ room.department.name }}</td>
+                        <td>{{ room.capacity }}</td>
+                        <td>{{ room.room_type }}</td>
+                        <td>{{ room.occupancy }}</td> <!-- Используем occupancy из модели -->
+                        <td>
+                            {% if room.occupied_beds_count() >= room.capacity %}
+                                <span class="badge badge-danger">Заполнена</span>
+                            {% else %}
+                                <span class="badge badge-success">Есть места</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('edit_room', room_id=room.room_id) }}" class="action-btn" title="Редактировать">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <form action="{{ url_for('delete_room', room_id=room.room_id) }}" method="POST" style="display:inline;">
+                                <button type="submit" class="action-btn" title="Удалить" onclick="return confirm('Вы уверены, что хотите удалить эту палату?')">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
                 {% endfor %}
             </tbody>
         </table>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Детали палаты {{ room.room_number }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0-alpha1/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f7f7f7;
+            font-family: -apple-system, BlinkMacSystemFont, "San Francisco", "Helvetica Neue", sans-serif;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .back-btn {
+            margin-bottom: 20px;
+        }
+        .patient-list {
+            margin-top: 30px;
+        }
+        .status-badge {
+            font-size: 0.9rem;
+            padding: 0.5em 0.75em;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="{{ url_for('view_rooms') }}" class="btn btn-primary back-btn">
+            ← Назад к списку палат
+        </a>
+
+        <h2>Палата №{{ room.room_number }}</h2>
+
+        <div class="room-info">
+            <p><strong>Отделение:</strong> {{ room.department.name }}</p>
+            <p><strong>Тип палаты:</strong> {{ room.room_type }}</p>
+            <p><strong>Вместимость:</strong> {{ room.beds|length }}/{{ room.capacity }}</p>
+        </div>
+
+        <div class="patient-list">
+            <h4>Пациенты в палате:</h4>
+            {% if room.beds %}
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Койка</th>
+                            <th>ФИО пациента</th>
+                            <th>Дата рождения</th>
+                            <th>Пол</th>
+                            <th>Статус</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for bed in room.beds %}
+                            <tr>
+                                <td>Койка {{ bed.bed_id }}</td>
+                                <td>
+                                    {% if bed.patient %}
+                                        {{ bed.patient.last_name }}
+                                        {{ bed.patient.first_name }}
+                                        {{ bed.patient.middle_name or '' }}
+                                    {% else %}
+                                        Свободно
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if bed.patient %}
+                                        {{ bed.patient.birth_date.strftime('%d.%m.%Y') }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if bed.patient %}
+                                        {{ bed.patient.gender }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span class="status-badge
+                                        {% if bed.patient %}
+                                            bg-success text-white
+                                        {% else %}
+                                            bg-secondary text-white
+                                        {% endif %}">
+                                        {% if bed.patient %}Занята{% else %}Свободна{% endif %}
+                                    </span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="alert alert-info">
+                    В этой палате пока нет коек
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

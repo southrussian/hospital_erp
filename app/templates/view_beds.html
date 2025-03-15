@@ -71,7 +71,6 @@
                     <th>ID</th>
                     <th>Номер палаты</th>
                     <th>Пациент</th>
-                    <th>Статус</th>
                     <th>Действия</th>
                 </tr>
             </thead>
@@ -81,7 +80,6 @@
                     <td>{{ bed.bed_id }}</td>
                     <td>{{ bed.room.room_number }}</td>
                     <td>{{ bed.patient.first_name }} {{ bed.patient.last_name }}</td>
-                    <td>{{ bed.status }}</td>
                     <td>
                         <a href="{{ url_for('edit_bed', bed_id=bed.bed_id) }}" class="action-btn">
                             <i class="fas fa-edit"></i>

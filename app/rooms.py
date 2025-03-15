@@ -10,14 +10,28 @@ def setup_view_rooms_routes(app):
     @app.route('/view_rooms')
     def view_rooms():
         try:
-            # Получаем палаты с информацией об отделениях
-            rooms = Room.query.options(db.joinedload(Room.department)).all()
-            return render_template('view_rooms.html',
-                                   rooms=rooms,
-                                   ROOM_TYPES=ROOM_TYPES)
+            rooms = Room.query.options(
+                db.joinedload(Room.department),
+                db.joinedload(Room.beds).joinedload(Bed.patient)
+            ).all()
+            for room in rooms:
+                room.occupancy = room.occupancy_rate()  # Добавляем occupancy для отображения
+            return render_template('view_rooms.html', rooms=rooms, ROOM_TYPES=ROOM_TYPES)
         except Exception as e:
             flash(f"Ошибка при загрузке данных: {str(e)}", "danger")
             return redirect(url_for('index'))
+
+    @app.route('/room_details/<int:room_id>')
+    def room_details(room_id):
+        try:
+            room = Room.query.options(
+                db.joinedload(Room.department),
+                db.joinedload(Room.beds).joinedload(Bed.patient)
+            ).get_or_404(room_id)
+            return render_template('room_details.html', room=room)
+        except Exception as e:
+            flash(f"Ошибка при загрузке данных: {str(e)}", "danger")
+            return redirect(url_for('view_rooms'))
 
 
 def setup_add_room_routes(app):
@@ -72,9 +86,7 @@ def setup_add_room_routes(app):
                 db.session.rollback()
                 flash(f"Ошибка при добавлении: {str(e)}", "danger")
 
-        return render_template('add_room.html',
-                               departments=departments,
-                               ROOM_TYPES=ROOM_TYPES)
+        return render_template('add_room.html', departments=departments, ROOM_TYPES=ROOM_TYPES)
 
 
 def setup_edit_room_routes(app):

@@ -73,10 +73,17 @@ class Room(db.Model):
     room_type = db.Column(db.String(20))  # Например: общая, индивидуальная и т.д.
 
     department = db.relationship('Department', backref='rooms')
-    beds = db.relationship('Bed', backref='room', lazy=True, cascade='all, delete-orphan')
+    beds = db.relationship('Bed', backref='room', lazy='joined', cascade='all, delete-orphan')
 
     def available_beds(self):
-        return Bed.query.filter_by(room_id=self.room_id, patient_id=None).count()
+        return self.capacity - self.occupied_beds_count()
+
+    def occupied_beds_count(self):
+        return len([bed for bed in self.beds if bed.patient_id is not None])
+
+    def occupancy_rate(self):
+        occupied = self.occupied_beds_count()
+        return f"{occupied}/{self.capacity}"
 
 
 class Bed(db.Model):
