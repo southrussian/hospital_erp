@@ -3,111 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Анализ поступлений</title>
+    <title>Аналитика поступлений</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0-alpha1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
-            background-color: #f7f7f7;
-            font-family: -apple-system, BlinkMacSystemFont, "San Francisco", "Helvetica Neue", sans-serif;
-            color: #333;
+            background-color: #f8f9fa;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
         }
-        .container {
-            margin-top: 50px;
-            max-width: 1200px;
+        .dashboard-header {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+            padding: 2rem;
+            margin-bottom: 2rem;
         }
-        .chart-container {
-            margin-top: 20px;
+        .chart-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            transition: transform 0.2s;
         }
-        .chart {
-            border-radius: 15px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            background-color: #fff;
-            padding: 20px;
-            margin-bottom: 20px;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .chart:hover {
+        .chart-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
         }
-        .btn {
-            border-radius: 15px;
-            padding: 10px 20px;
-            background-color: #007aff;
-            border: none;
-            color: #fff;
-            font-weight: bold;
-            transition: background-color 0.2s ease;
-        }
-        .btn:hover {
-            background-color: #0061d5;
-        }
-        h1 {
+        .chart-title {
+            font-size: 1.25rem;
             font-weight: 600;
-            color: #000;
-        }
-        h2 {
-            font-weight: 500;
-            color: #000;
-            margin-bottom: 20px;
-        }
-        .btn-container {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 1.5rem;
+            color: #2c3e50;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1 class="text-center mb-4">Анализ поступлений</h1>
-    <div class="btn-container">
-        <a href="{{ url_for('dashboard') }}" class="btn btn-primary">Назад на панель управления</a>
-        <a href="{{ url_for('view_admissions') }}" class="btn btn-primary">Просмотр поступлений</a>
-    </div>
-    <div class="row chart-container">
-        <div class="col-md-6">
-            <div class="chart">
-                <h2>Поступления в день</h2>
-                {{ graph1|safe }}
+<div class="container py-4">
+    <div class="dashboard-header">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="mb-0">Аналитика поступлений</h1>
+            <div class="d-flex gap-2">
+                <a href="{{ url_for('view_admissions') }}" class="btn btn-outline-primary">
+                    <i class="fas fa-list"></i> К списку
+                </a>
+                <a href="{{ url_for('dashboard') }}" class="btn btn-primary">
+                    <i class="fas fa-home"></i> На главную
+                </a>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="chart">
-                <h2>Причины поступления</h2>
-                {{ graph2|safe }}
+
+        <div class="row g-4">
+            <div class="col-12">
+                <div class="chart-card">
+                    <div class="chart-title">Динамика поступлений</div>
+                    {{ by_date|safe }}
+                </div>
             </div>
-        </div>
-        <div class="col-md-6">
-            <div class="chart">
-                <h2>Поступления по врачам</h2>
-                {{ graph3|safe }}
+
+            <div class="col-md-6">
+                <div class="chart-card">
+                    <div class="chart-title">Распределение по причинам</div>
+                    {{ by_reason|safe }}
+                </div>
             </div>
-        </div>
-        <div class="col-md-6">
-            <div class="chart">
-                <h2>Поступления по времени суток</h2>
-                {{ graph4|safe }}
+
+            <div class="col-md-6">
+                <div class="chart-card">
+                    <div class="chart-title">Распределение по полу</div>
+                    {{ gender_dist|safe }}
+                </div>
             </div>
-        </div>
-        <div class="col-md-6">
-            <div class="chart">
-                <h2>Средняя продолжительность пребывания</h2>
-                {{ graph5|safe }}
+
+            <div class="col-md-6">
+                <div class="chart-card">
+                    <div class="chart-title">По времени суток</div>
+                    {{ by_hour|safe }}
+                </div>
             </div>
-        </div>
-        <div class="col-md-6">
-            <div class="chart">
-                <h2>Поступления по возрастным группам</h2>
-                {{ graph6|safe }}
+
+            <div class="col-md-6">
+                <div class="chart-card">
+                    <div class="chart-title">Возрастное распределение</div>
+                    {{ age_dist|safe }}
+                </div>
             </div>
-        </div>
-        <div class="col-md-6">
-            <div class="chart">
-                <h2>Поступления по полу</h2>
-                {{ graph7|safe }}
+
+            <div class="col-12">
+                <div class="chart-card">
+                    <div class="chart-title">Длительность госпитализации</div>
+                    {{ los_dist|safe }}
+                </div>
             </div>
         </div>
     </div>

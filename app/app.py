@@ -12,7 +12,8 @@ from departments import (setup_view_departments_routes, setup_add_department_rou
                          setup_delete_department_routes)
 from rooms import setup_view_rooms_routes, setup_add_room_routes, setup_edit_room_routes, setup_delete_room_routes
 from schedules import view_schedule, add_schedule, edit_schedule, delete_schedule
-from admissions import view_admissions, add_admission, edit_admission, delete_admission, analyze_admissions
+from admissions import (setup_view_admissions_routes, setup_add_admission_routes, setup_edit_admission_routes,
+                        setup_delete_admission_routes, setup_analyze_admissions_routes)
 from medicines import view_medicine, add_medicine, edit_medicine, delete_medicine
 from medicine_invetory import (view_medicine_inventory, add_medicine_inventory, edit_medicine_inventory,
                                delete_medicine_inventory)
@@ -68,11 +69,11 @@ add_schedule(app)
 edit_schedule(app)
 delete_schedule(app)
 
-view_admissions(app)
-add_admission(app)
-edit_admission(app)
-delete_admission(app)
-analyze_admissions(app)
+setup_view_admissions_routes(app)
+setup_add_admission_routes(app)
+setup_edit_admission_routes(app)
+setup_delete_admission_routes(app)
+setup_analyze_admissions_routes(app)
 
 view_medicine(app)
 add_medicine(app)

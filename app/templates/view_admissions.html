@@ -14,66 +14,56 @@
         }
         .container {
             margin-top: 50px;
-            max-width: 1200px;
+            max-width: 1400px;
         }
         .table-container {
             overflow-x: auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
         }
         .table {
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            width: 100%;
+            margin-bottom: 0;
         }
-        .btn {
-            border-radius: 15px;
-            padding: 10px 20px;
-            background-color: #007aff;
-            border: none;
-            color: #fff;
-            font-weight: bold;
+        .status-badge {
+            font-size: 0.85rem;
+            padding: 0.4em 0.75em;
         }
-        .btn:hover {
-            background-color: #0061d5;
+        .action-buttons {
+            white-space: nowrap;
         }
-        .action-btn {
-            border: none;
-            background: none;
-            color: #007aff;
-            font-size: 1.2rem;
-            padding: 0;
-            margin: 0;
-        }
-        .action-btn:hover {
-            color: #0061d5;
-        }
-        @media (max-width: 768px) {
-            .table-container {
-                overflow-x: scroll;
-            }
-            .table th:nth-child(n+5),
-            .table td:nth-child(n+5) {
-                display: none;
-            }
+        .datetime-column {
+            min-width: 160px;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1 class="text-center mb-4">Список поступлений</h1>
-    <a href="{{ url_for('dashboard') }}" class="btn btn-primary mb-3">Назад на панель управления</a>
-    <a href="{{ url_for('add_admission') }}" class="btn btn-primary mb-3">Добавить поступление</a>
-    <a href="{{ url_for('analyze_admissions') }}" class="btn btn-primary mb-3">Графики поступлений</a>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">Поступления пациентов</h1>
+        <div class="d-flex gap-2">
+            <a href="{{ url_for('dashboard') }}" class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left"></i> Назад
+            </a>
+            <a href="{{ url_for('add_admission') }}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Новое поступление
+            </a>
+            <a href="{{ url_for('analyze_admissions') }}" class="btn btn-primary">Анализ поступлений</a>
+        </div>
+    </div>
+
     <div class="table-container">
-        <table class="table table-striped">
-            <thead>
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
                 <tr>
                     <th>ID</th>
                     <th>Пациент</th>
                     <th>Дата поступления</th>
                     <th>Дата выписки</th>
-                    <th>Причина поступления</th>
+                    <th>Причина</th>
+                    <th>Диагноз</th>
+                    <th>Статус</th>
                     <th>Врач</th>
                     <th>Действия</th>
                 </tr>
@@ -82,20 +72,55 @@
                 {% for admission in admissions %}
                 <tr>
                     <td>{{ admission.admission_id }}</td>
-                    <td>{{ admission.patient.first_name }} {{ admission.patient.last_name }}</td>
-                    <td>{{ admission.admission_date }}</td>
-                    <td>{{ admission.discharge_date }}</td>
-                    <td>{{ admission.reason_for_admission }}</td>
-                    <td>{{ admission.doctor.first_name }} {{ admission.doctor.last_name }}</td>
                     <td>
-                        <a href="{{ url_for('edit_admission', admission_id=admission.admission_id) }}" class="action-btn">
+                        {{ admission.patient.last_name }}
+                        {{ admission.patient.first_name }}
+                        {{ admission.patient.middle_name or '' }}
+                    </td>
+                    <td class="datetime-column">
+                        {{ admission.admission_date.strftime('%d.%m.%Y %H:%M') }}
+                    </td>
+                    <td class="datetime-column">
+                        {% if admission.discharge_date %}
+                            {{ admission.discharge_date.strftime('%d.%m.%Y %H:%M') }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+                    <td>{{ admission.reason }}</td>
+                    <td>{{ admission.diagnosis or '—' }}</td>
+                    <td>
+                        <span class="badge {% if admission.is_active %}bg-success{% else %}bg-secondary{% endif %} status-badge">
+                            {% if admission.is_active %}Активно{% else %}Завершено{% endif %}
+                        </span>
+                    </td>
+                    <td>
+                        {{ admission.user.last_name }}
+                        {{ admission.user.first_name|first }}.
+                        {{ admission.user.middle_name|first if admission.user.middle_name else '' }}.
+                    </td>
+                    <td class="action-buttons">
+                        <a href="{{ url_for('edit_admission', admission_id=admission.admission_id) }}"
+                           class="btn btn-sm btn-outline-primary"
+                           title="Редактировать">
                             <i class="fas fa-edit"></i>
                         </a>
-                        <form action="{{ url_for('delete_admission', admission_id=admission.admission_id) }}" method="POST" style="display:inline;">
-                            <button type="submit" class="action-btn" onclick="return confirm('Вы уверены, что хотите удалить это поступление?')">
+                        <form action="{{ url_for('delete_admission', admission_id=admission.admission_id) }}"
+                              method="POST"
+                              class="d-inline"
+                              onsubmit="return confirm('Вы уверены, что хотите удалить это поступление?');">
+                            <button type="submit"
+                                    class="btn btn-sm btn-outline-danger"
+                                    title="Удалить">
                                 <i class="fas fa-trash-alt"></i>
                             </button>
                         </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="9" class="text-center text-muted py-4">
+                        Нет данных о поступлениях
                     </td>
                 </tr>
                 {% endfor %}
