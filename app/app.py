@@ -14,13 +14,15 @@ from rooms import setup_view_rooms_routes, setup_add_room_routes, setup_edit_roo
 from schedules import view_schedule, add_schedule, edit_schedule, delete_schedule
 from admissions import (setup_view_admissions_routes, setup_add_admission_routes, setup_edit_admission_routes,
                         setup_delete_admission_routes, setup_analyze_admissions_routes)
-from medicines import view_medicine, add_medicine, edit_medicine, delete_medicine
+from medicines import (setup_view_medicine_routes, setup_add_medicine_routes, setup_edit_medicine_routes,
+                       setup_delete_medicine_routes)
 from medicine_invetory import (view_medicine_inventory, add_medicine_inventory, edit_medicine_inventory,
                                delete_medicine_inventory)
 from beds import setup_view_beds_routes, setup_add_bed_routes, setup_edit_bed_routes, setup_delete_bed_routes
 from operations import view_operations, add_operation, edit_operation, delete_operation
 from prescriptions import view_prescriptions, add_prescription, edit_prescription, delete_prescription
-from medical_records import view_medical_records, add_medical_record, edit_medical_record, delete_medical_record
+from medical_records import (setup_view_medical_records_routes, setup_add_medical_record_routes,
+                             setup_edit_medical_record_routes, setup_delete_medical_record_routes)
 from flask_migrate import Migrate
 
 app = Flask(__name__)
@@ -75,10 +77,10 @@ setup_edit_admission_routes(app)
 setup_delete_admission_routes(app)
 setup_analyze_admissions_routes(app)
 
-view_medicine(app)
-add_medicine(app)
-edit_medicine(app)
-delete_medicine(app)
+setup_view_medicine_routes(app)
+setup_add_medicine_routes(app)
+setup_edit_medicine_routes(app)
+setup_delete_medicine_routes(app)
 
 view_medicine_inventory(app)
 add_medicine_inventory(app)
@@ -100,10 +102,10 @@ add_prescription(app)
 edit_prescription(app)
 delete_prescription(app)
 
-view_medical_records(app)
-add_medical_record(app)
-edit_medical_record(app)
-delete_medical_record(app)
+setup_view_medical_records_routes(app)
+setup_add_medical_record_routes(app)
+setup_edit_medical_record_routes(app)
+setup_delete_medical_record_routes(app)
 
 
 @app.route('/')

@@ -18,7 +18,7 @@ def setup_view_admissions_routes(app):
                                    admissions=admissions)
         except Exception as e:
             flash(f"Ошибка загрузки данных: {str(e)}", "danger")
-            return redirect(url_for('index'))
+            return redirect(url_for('dashboard'))
 
 
 def setup_add_admission_routes(app):
