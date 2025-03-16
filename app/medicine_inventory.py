@@ -24,7 +24,6 @@ def setup_add_medicine_inventory_routes(app):
 
             errors = []
 
-            # Валидация medicine_id
             if not medicine_id:
                 errors.append("Необходимо выбрать лекарство")
             else:
@@ -35,7 +34,6 @@ def setup_add_medicine_inventory_routes(app):
                 except ValueError:
                     errors.append("Некорректный ID лекарства")
 
-            # Валидация quantity
             try:
                 quantity = int(quantity)
                 if quantity < 0:
@@ -43,7 +41,6 @@ def setup_add_medicine_inventory_routes(app):
             except ValueError:
                 errors.append("Некорректное значение количества")
 
-            # Валидация expiration_date
             expiration_date = None
             if expiration_date_str:
                 try:

@@ -19,7 +19,8 @@ from medicines import (setup_view_medicine_routes, setup_add_medicine_routes, se
 from medicine_inventory import (setup_view_medicine_inventory_routes, setup_add_medicine_inventory_routes,
                                 setup_edit_medicine_inventory_routes, setup_delete_medicine_inventory_routes)
 from beds import setup_view_beds_routes, setup_add_bed_routes, setup_edit_bed_routes, setup_delete_bed_routes
-from operations import view_operations, add_operation, edit_operation, delete_operation
+from operations import (setup_view_operations_routes, setup_add_operation_routes, setup_edit_operation_routes,
+                        setup_delete_operation_routes)
 from prescriptions import view_prescriptions, add_prescription, edit_prescription, delete_prescription
 from medical_records import (setup_view_medical_records_routes, setup_add_medical_record_routes,
                              setup_edit_medical_record_routes, setup_delete_medical_record_routes)
@@ -92,10 +93,10 @@ setup_add_bed_routes(app)
 setup_edit_bed_routes(app)
 setup_delete_bed_routes(app)
 
-view_operations(app)
-add_operation(app)
-edit_operation(app)
-delete_operation(app)
+setup_view_operations_routes(app)
+setup_add_operation_routes(app)
+setup_edit_operation_routes(app)
+setup_delete_operation_routes(app)
 
 view_prescriptions(app)
 add_prescription(app)

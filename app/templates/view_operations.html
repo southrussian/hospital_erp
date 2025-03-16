@@ -71,10 +71,11 @@
                     <th>ID</th>
                     <th>Пациент</th>
                     <th>Врач</th>
-                    <th>Тип операции</th>
                     <th>Дата операции</th>
+                    <th>Тип операции</th>
                     <th>Продолжительность</th>
                     <th>Результат</th>
+                    <th>Заметки</th>
                     <th>Действия</th>
                 </tr>
             </thead>
@@ -84,10 +85,11 @@
                     <td>{{ operation.operation_id }}</td>
                     <td>{{ operation.patient.first_name }} {{ operation.patient.last_name }}</td>
                     <td>{{ operation.doctor.first_name }} {{ operation.doctor.last_name }}</td>
-                    <td>{{ operation.operation_type }}</td>
                     <td>{{ operation.operation_date }}</td>
+                    <td>{{ operation.type }}</td>
                     <td>{{ operation.duration }}</td>
                     <td>{{ operation.outcome }}</td>
+                    <td>{{ operation.notes }}</td>
                     <td>
                         <a href="{{ url_for('edit_operation', operation_id=operation.operation_id) }}" class="action-btn">
                             <i class="fas fa-edit"></i>

@@ -115,7 +115,7 @@
         <!-- Временные слоты и события -->
         {% for hour in range(8, 21) %}
     <div class="time-slot">{{ "%02d:00" % hour }}</div>
-    {% for day in ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье'] %}
+    {% for day in [1, 2, 3, 4, 5, 6, 7] %}
         <div class="day">
             {% for schedule in schedules %}
                 {% if schedule.day_of_week == day %}
