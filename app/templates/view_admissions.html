@@ -95,9 +95,7 @@
                         </span>
                     </td>
                     <td>
-                        {{ admission.user.last_name }}
-                        {{ admission.user.first_name|first }}.
-                        {{ admission.user.middle_name|first if admission.user.middle_name else '' }}.
+                        {{ admission.user.username }}
                     </td>
                     <td class="action-buttons">
                         <a href="{{ url_for('edit_admission', admission_id=admission.admission_id) }}"

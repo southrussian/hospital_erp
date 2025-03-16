@@ -87,7 +87,6 @@
             <h2>Дашборд травматологического отделения</h2>
         </div>
         <div class="card-body">
-            <a href="{{ url_for('view_users') }}" class="dashboard-button">Пользователи</a>
             <a href="{{ url_for('view_doctors') }}" class="dashboard-button">Врачи</a>
             <a href="{{ url_for('view_departments') }}" class="dashboard-button">Отделения</a>
             <a href="{{ url_for('view_patients') }}" class="dashboard-button">Пациенты</a>
@@ -100,7 +99,6 @@
             <a href="{{ url_for('view_prescriptions')}}" class="dashboard-button">Предписания</a>
             <a href="{{ url_for('view_medical_records')}}" class="dashboard-button">Записи осмотров</a>
             <a href="{{ url_for('view_admissions')}}" class="dashboard-button">Поступления</a>
-            <a href="{{ url_for('view_hospitalization_history')}}" class="dashboard-button">Истории госпитализаций</a>
         </div>
         <a href="{{ url_for('logout') }}" class="logout-link">Выйти</a>
     </div>

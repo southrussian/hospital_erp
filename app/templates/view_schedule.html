@@ -14,7 +14,7 @@
         }
         .container {
             margin-top: 50px;
-            max-width: 1200px;
+            max-width: 1400px;
         }
         .calendar {
             display: grid;
@@ -22,9 +22,9 @@
             grid-template-rows: 50px repeat(24, 30px);
             gap: 1px;
             background-color: #ddd;
-            border-radius: 10px;
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
         }
         .calendar-header {
             background-color: #007aff;
@@ -47,7 +47,7 @@
             background-color: #4CAF50;
             color: white;
             padding: 5px;
-            border-radius: 3px;
+            border-radius: 8px;
             font-size: 0.8rem;
             position: absolute;
             width: 100%;
@@ -62,30 +62,46 @@
             z-index: 0;
         }
         .btn {
-            border-radius: 15px;
-            padding: 10px 20px;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 0.875rem;
+        }
+        .btn-primary {
             background-color: #007aff;
             border: none;
-            color: #fff;
-            font-weight: bold;
         }
-        .btn:hover {
+        .btn-primary:hover {
             background-color: #0061d5;
         }
+        .btn-outline-primary {
+            border-color: #007aff;
+            color: #007aff;
+        }
+        .btn-outline-primary:hover {
+            background-color: #007aff;
+            color: #fff;
+        }
         .form-select {
-            border-radius: 15px;
-            padding: 10px;
+            border-radius: 8px;
+            padding: 8px 12px;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1 class="text-center mb-4">Календарь расписания</h1>
-    <div class="mb-3">
-        <a href="{{ url_for('dashboard') }}" class="btn btn-primary">Назад на панель управления</a>
-        <a href="{{ url_for('add_schedule') }}" class="btn btn-primary">Добавить расписание</a>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">Расписания врачей</h1>
+        <div class="d-flex gap-2">
+            <a href="{{ url_for('dashboard') }}" class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left"></i> Назад
+            </a>
+            <a href="{{ url_for('add_schedule') }}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Добавить расписание
+            </a>
+        </div>
     </div>
+
     <div class="mb-3">
         <form method="GET" action="{{ url_for('view_schedule') }}" class="d-flex">
             <select name="doctor_id" class="form-select me-2">
@@ -99,6 +115,7 @@
             <button type="submit" class="btn btn-primary">Фильтровать</button>
         </form>
     </div>
+
     <div class="calendar">
         <!-- Пустая ячейка в левом верхнем углу -->
         <div class="calendar-header"></div>
@@ -114,33 +131,31 @@
 
         <!-- Временные слоты и события -->
         {% for hour in range(8, 21) %}
-    <div class="time-slot">{{ "%02d:00" % hour }}</div>
-    {% for day in [1, 2, 3, 4, 5, 6, 7] %}
-        <div class="day">
-            {% for schedule in schedules %}
-                {% if schedule.day_of_week == day %}
-                    {% set start_hour = schedule.start_time.hour %}
-                    {% set start_minute = schedule.start_time.minute %}
-                    {% set end_hour = schedule.end_time.hour %}
-                    {% set end_minute = schedule.end_time.minute %}
-                    {% set start_time = start_hour * 60 + start_minute %}
-                    {% set end_time = end_hour * 60 + end_minute %}
-                    {% set current_time = hour * 60 %}
+            <div class="time-slot">{{ "%02d:00" % hour }}</div>
+            {% for day in [1, 2, 3, 4, 5, 6, 7] %}
+                <div class="day">
+                    {% for schedule in schedules %}
+                        {% if schedule.day_of_week == day %}
+                            {% set start_hour = schedule.start_time.hour %}
+                            {% set start_minute = schedule.start_time.minute %}
+                            {% set end_hour = schedule.end_time.hour %}
+                            {% set end_minute = schedule.end_time.minute %}
+                            {% set start_time = start_hour * 60 + start_minute %}
+                            {% set end_time = end_hour * 60 + end_minute %}
+                            {% set current_time = hour * 60 %}
 
-                    <!-- Отображение события только один раз -->
-                    {% if start_time <= current_time and end_time > current_time %}
-                        <div class="event" style="top: {{ (start_time - hour * 60) * 0.5 }}px; height: {{ (end_time - start_time) * 0.5 }}px;">
-                            {{ schedule.doctor.first_name }} {{ schedule.doctor.last_name }}<br>
-                            {{ schedule.start_time.strftime('%H:%M') }} - {{ schedule.end_time.strftime('%H:%M') }}
-                        </div>
-                    {% endif %}
-                {% endif %}
+                            <!-- Отображение события только один раз -->
+                            {% if start_time <= current_time and end_time > current_time %}
+                                <div class="event" style="top: {{ (start_time - hour * 60) * 0.5 }}px; height: {{ (end_time - start_time) * 0.5 }}px;">
+                                    {{ schedule.doctor.first_name }} {{ schedule.doctor.last_name }}<br>
+                                    {{ schedule.start_time.strftime('%H:%M') }} - {{ schedule.end_time.strftime('%H:%M') }}
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
             {% endfor %}
-        </div>
-    {% endfor %}
-{% endfor %}
-
-
+        {% endfor %}
     </div>
 </div>
 
