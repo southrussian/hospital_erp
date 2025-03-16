@@ -72,6 +72,7 @@
                     <th>Лекарство</th>
                     <th>Количество</th>
                     <th>Последнее обновление</th>
+                    <th>Срок годности</th>
                     <th>Действия</th>
                 </tr>
             </thead>
@@ -81,6 +82,7 @@
                     <td>{{ inventory.inventory_id }}</td>
                     <td>{{ inventory.medicine.name }}</td>
                     <td>{{ inventory.quantity }}</td>
+                    <td>{{ inventory.expiration_date }}</td>
                     <td>{{ inventory.last_updated }}</td>
                     <td>
                         <a href="{{ url_for('edit_medicine_inventory', inventory_id=inventory.inventory_id) }}" class="action-btn">

@@ -168,6 +168,8 @@ class MedicineInventory(db.Model):
         CheckConstraint('quantity >= 0', name='check_quantity_positive'),
     )
 
+    medicine = db.relationship('Medicine')
+
 
 class Prescription(db.Model):
     __tablename__ = 'prescriptions'
