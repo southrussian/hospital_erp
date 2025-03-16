@@ -16,8 +16,8 @@ from admissions import (setup_view_admissions_routes, setup_add_admission_routes
                         setup_delete_admission_routes, setup_analyze_admissions_routes)
 from medicines import (setup_view_medicine_routes, setup_add_medicine_routes, setup_edit_medicine_routes,
                        setup_delete_medicine_routes)
-from medicine_invetory import (setup_view_medicine_inventory_routes, setup_add_medicine_inventory_routes,
-                               setup_edit_medicine_inventory_routes, setup_delete_medicine_inventory_routes)
+from medicine_inventory import (setup_view_medicine_inventory_routes, setup_add_medicine_inventory_routes,
+                                setup_edit_medicine_inventory_routes, setup_delete_medicine_inventory_routes)
 from beds import setup_view_beds_routes, setup_add_bed_routes, setup_edit_bed_routes, setup_delete_bed_routes
 from operations import view_operations, add_operation, edit_operation, delete_operation
 from prescriptions import view_prescriptions, add_prescription, edit_prescription, delete_prescription
