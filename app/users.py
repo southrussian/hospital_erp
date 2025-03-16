@@ -2,7 +2,7 @@ from models import *
 from flask import render_template, redirect, url_for, flash, request, session
 
 
-def register(app):
+def setup_register_routes(app):
     @app.route('/register', methods=['GET', 'POST'])
     def register():
         if request.method == 'POST':
@@ -24,7 +24,7 @@ def register(app):
         return render_template('register.html')
 
 
-def login(app):
+def setup_login_routes(app):
     @app.route('/login', methods=['GET', 'POST'])
     def login():
         if request.method == 'POST':
@@ -42,7 +42,7 @@ def login(app):
         return render_template('login.html')
 
 
-def logout(app):
+def setup_logout_routes(app):
     @app.route('/logout')
     def logout():
         session.pop('user_id', None)
@@ -50,7 +50,7 @@ def logout(app):
         return redirect(url_for('login'))
 
 
-def view_users(app):
+def setup_view_users_routes(app):
     @app.route('/view_users')
     def view_users():
         users = User.query.all()

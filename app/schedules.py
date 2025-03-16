@@ -2,7 +2,7 @@ from flask import render_template, redirect, url_for, flash, request
 from models import *
 
 
-def view_schedule(app):
+def setup_view_schedule_routes(app):
     @app.route('/view_schedule')
     def view_schedule():
         doctor_id = request.args.get('doctor_id')
@@ -14,8 +14,7 @@ def view_schedule(app):
         return render_template('view_schedule.html', schedules=schedules, doctors=doctors, selected_doctor_id=doctor_id)
 
 
-
-def add_schedule(app):
+def setup_add_schedule_routes(app):
     @app.route('/add_schedule', methods=['GET', 'POST'])
     def add_schedule():
         if request.method == 'POST':
@@ -48,7 +47,7 @@ def add_schedule(app):
         return render_template('add_schedule.html', doctors=doctors)
 
 
-def edit_schedule(app):
+def setup_edit_schedule_routes(app):
     @app.route('/edit_schedule/<int:schedule_id>', methods=['GET', 'POST'])
     def edit_schedule(schedule_id):
         schedule = Schedule.query.get_or_404(schedule_id)
@@ -75,7 +74,7 @@ def edit_schedule(app):
         return render_template('edit_schedule.html', schedule=schedule, doctors=doctors)
 
 
-def delete_schedule(app):
+def setup_delete_schedule_routes(app):
     @app.route('/delete_schedule/<int:schedule_id>', methods=['POST'])
     def delete_schedule(schedule_id):
         schedule = Schedule.query.get_or_404(schedule_id)

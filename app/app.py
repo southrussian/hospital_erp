@@ -3,7 +3,7 @@ import logging
 from logging.handlers import RotatingFileHandler
 from models import *
 
-from users import register, login, logout, view_users
+from users import setup_register_routes, setup_login_routes, setup_logout_routes, setup_view_users_routes
 from patients import (setup_view_patients_routes, setup_add_patient_routes, setup_edit_patient_routes,
                       setup_delete_patient_routes)
 from doctors import (setup_view_doctors_routes, setup_add_doctor_routes, setup_edit_doctor_routes,
@@ -11,7 +11,8 @@ from doctors import (setup_view_doctors_routes, setup_add_doctor_routes, setup_e
 from departments import (setup_view_departments_routes, setup_add_department_routes, setup_edit_department_routes,
                          setup_delete_department_routes)
 from rooms import setup_view_rooms_routes, setup_add_room_routes, setup_edit_room_routes, setup_delete_room_routes
-from schedules import view_schedule, add_schedule, edit_schedule, delete_schedule
+from schedules import (setup_view_schedule_routes, setup_add_schedule_routes, setup_edit_schedule_routes,
+                       setup_delete_schedule_routes)
 from admissions import (setup_view_admissions_routes, setup_add_admission_routes, setup_edit_admission_routes,
                         setup_delete_admission_routes, setup_analyze_admissions_routes)
 from medicines import (setup_view_medicine_routes, setup_add_medicine_routes, setup_edit_medicine_routes,
@@ -42,10 +43,10 @@ app.logger.info("Приложение Flask запущено.")
 db.init_app(app)
 migrate = Migrate(app, db)
 
-register(app)
-login(app)
-logout(app)
-view_users(app)
+setup_register_routes(app)
+setup_login_routes(app)
+setup_logout_routes(app)
+setup_view_users_routes(app)
 
 setup_view_patients_routes(app)
 setup_add_patient_routes(app)
@@ -67,10 +68,10 @@ setup_add_room_routes(app)
 setup_edit_room_routes(app)
 setup_delete_room_routes(app)
 
-view_schedule(app)
-add_schedule(app)
-edit_schedule(app)
-delete_schedule(app)
+setup_view_schedule_routes(app)
+setup_add_schedule_routes(app)
+setup_edit_schedule_routes(app)
+setup_delete_schedule_routes(app)
 
 setup_view_admissions_routes(app)
 setup_add_admission_routes(app)
