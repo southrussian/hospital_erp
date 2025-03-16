@@ -14,7 +14,7 @@
         }
         .container {
             margin-top: 50px;
-            max-width: 1200px;
+            max-width: 1400px;
         }
         .table-container {
             overflow-x: auto;
@@ -47,6 +47,15 @@
         .action-btn:hover {
             color: #0061d5;
         }
+        .status-active {
+            color: #28a745;
+        }
+        .status-completed {
+            color: #6c757d;
+        }
+        .status-cancelled {
+            color: #dc3545;
+        }
         @media (max-width: 768px) {
             .table-container {
                 overflow-x: scroll;
@@ -69,10 +78,14 @@
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Медицинская запись</th>
+                    <th>Пациент</th>
                     <th>Лекарство</th>
+                    <th>Врач</th>
                     <th>Дозировка</th>
-                    <th>Продолжительность</th>
+                    <th>Частота</th>
+                    <th>Дата начала</th>
+                    <th>Дата окончания</th>
+                    <th>Статус</th>
                     <th>Инструкции</th>
                     <th>Действия</th>
                 </tr>
@@ -81,11 +94,25 @@
                 {% for prescription in prescriptions %}
                 <tr>
                     <td>{{ prescription.prescription_id }}</td>
-                    <td>{{ prescription.record.patient.first_name }} {{ prescription.record.patient.last_name }}</td>
+                    <td>{{ prescription.patient.first_name }} {{ prescription.patient.last_name }}</td>
                     <td>{{ prescription.medicine.name }}</td>
+                    <td>{{ prescription.doctor.first_name }} {{ prescription.doctor.last_name }}</td>
                     <td>{{ prescription.dosage }}</td>
-                    <td>{{ prescription.duration }}</td>
-                    <td>{{ prescription.instructions }}</td>
+                    <td>{{ prescription.frequency }}</td>
+                    <td>{{ prescription.start_date.strftime('%Y-%m-%d %H:%M') if prescription.start_date else '—' }}</td>
+                    <td>{{ prescription.end_date.strftime('%Y-%m-%d %H:%M') if prescription.end_date else '—' }}</td>
+                    <td>
+                        <span class="status-{{ prescription.status }}">
+                            {% if prescription.status == 'active' %}
+                                Активен
+                            {% elif prescription.status == 'completed' %}
+                                Завершен
+                            {% elif prescription.status == 'cancelled' %}
+                                Отменен
+                            {% endif %}
+                        </span>
+                    </td>
+                    <td>{{ prescription.instructions or '—' }}</td>
                     <td>
                         <a href="{{ url_for('edit_prescription', prescription_id=prescription.prescription_id) }}" class="action-btn">
                             <i class="fas fa-edit"></i>

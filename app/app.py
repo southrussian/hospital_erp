@@ -22,9 +22,14 @@ from medicine_inventory import (setup_view_medicine_inventory_routes, setup_add_
 from beds import setup_view_beds_routes, setup_add_bed_routes, setup_edit_bed_routes, setup_delete_bed_routes
 from operations import (setup_view_operations_routes, setup_add_operation_routes, setup_edit_operation_routes,
                         setup_delete_operation_routes)
-from prescriptions import view_prescriptions, add_prescription, edit_prescription, delete_prescription
+from prescriptions import (setup_view_prescriptions_routes, setup_add_prescription_routes,
+                           setup_edit_prescription_routes, setup_delete_prescription_routes)
 from medical_records import (setup_view_medical_records_routes, setup_add_medical_record_routes,
                              setup_edit_medical_record_routes, setup_delete_medical_record_routes)
+from hospitalization_history import (setup_view_hospitalization_history_routes,
+                                     setup_add_hospitalization_history_routes,
+                                     setup_edit_hospitalization_history_routes,
+                                     setup_delete_hospitalization_history_routes)
 from flask_migrate import Migrate
 
 app = Flask(__name__)
@@ -99,15 +104,20 @@ setup_add_operation_routes(app)
 setup_edit_operation_routes(app)
 setup_delete_operation_routes(app)
 
-view_prescriptions(app)
-add_prescription(app)
-edit_prescription(app)
-delete_prescription(app)
+setup_view_prescriptions_routes(app)
+setup_add_prescription_routes(app)
+setup_edit_prescription_routes(app)
+setup_delete_prescription_routes(app)
 
 setup_view_medical_records_routes(app)
 setup_add_medical_record_routes(app)
 setup_edit_medical_record_routes(app)
 setup_delete_medical_record_routes(app)
+
+setup_view_hospitalization_history_routes(app)
+setup_add_hospitalization_history_routes(app)
+setup_edit_hospitalization_history_routes(app)
+setup_delete_hospitalization_history_routes(app)
 
 
 @app.route('/')
