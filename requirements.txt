@@ -4,3 +4,4 @@ werkzeug
 plotly
 sqlalchemy
 pandas
+matplotlib

@@ -5,7 +5,7 @@ from models import *
 
 from users import setup_register_routes, setup_login_routes, setup_logout_routes, setup_view_users_routes
 from patients import (setup_view_patients_routes, setup_add_patient_routes, setup_edit_patient_routes,
-                      setup_delete_patient_routes)
+                      setup_delete_patient_routes, setup_patient_details_routes)
 from doctors import (setup_view_doctors_routes, setup_add_doctor_routes, setup_edit_doctor_routes,
                      setup_delete_doctor_routes)
 from departments import (setup_view_departments_routes, setup_add_department_routes, setup_edit_department_routes,
@@ -57,6 +57,7 @@ setup_view_patients_routes(app)
 setup_add_patient_routes(app)
 setup_edit_patient_routes(app)
 setup_delete_patient_routes(app)
+setup_patient_details_routes(app)
 
 setup_view_doctors_routes(app)
 setup_add_doctor_routes(app)

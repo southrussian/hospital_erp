@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактировать запись о госпитализации</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0-alpha1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            background-color: #f7f7f7;
+            font-family: -apple-system, BlinkMacSystemFont, "San Francisco", "Helvetica Neue", sans-serif;
+            color: #333;
+        }
+        .container {
+            margin-top: 50px;
+            max-width: 1400px;
+        }
+        .form-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+            padding: 2rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">Редактировать запись о госпитализации</h1>
+        <div class="d-flex gap-2">
+            <a href="{{ url_for('view_hospitalization_history') }}" class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left"></i> Назад
+            </a>
+        </div>
+    </div>
+
+    <div class="form-container">
+        <form method="POST" action="{{ url_for('edit_hospitalization_history', history_id=hospitalization.history_id) }}">
+            <div class="mb-3">
+                <label for="patient_id" class="form-label">Пациент</label>
+                <select class="form-select" id="patient_id" name="patient_id" required>
+                    <option value="">Выберите пациента</option>
+                    {% for patient in patients %}
+                    <option value="{{ patient.id }}" {% if hospitalization.patient_id == patient.id %}selected{% endif %}>
+                        {{ patient.last_name }} {{ patient.first_name }} {{ patient.middle_name or '' }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="bed_id" class="form-label">Койка</label>
+                <select class="form-select" id="bed_id" name="bed_id" required>
+                    <option value="">Выберите койку</option>
+                    {% for bed in beds %}
+                    <option value="{{ bed.bed_id }}" {% if hospitalization.bed_id == bed.id %}selected{% endif %}>
+                        {{ bed.bed_id }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="admission_id" class="form-label">Поступление</label>
+                <select class="form-select" id="admission_id" name="admission_id" required>
+                    <option value="">Выберите поступление</option>
+                    {% for admission in admissions %}
+                    <option value="{{ admission.id }}" {% if hospitalization.admission_id == admission.id %}selected{% endif %}>
+                        {{ admission.reason }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="start_date" class="form-label">Дата начала</label>
+                <input type="datetime-local" class="form-control" id="start_date" name="start_date" required
+                       value="{{ hospitalization.start_date.strftime('%Y-%m-%dT%H:%M') }}">
+            </div>
+            <div class="mb-3">
+                <label for="end_date" class="form-label">Дата окончания</label>
+                <input type="datetime-local" class="form-control" id="end_date" name="end_date"
+                       value="{{ hospitalization.end_date.strftime('%Y-%m-%dT%H:%M') if hospitalization.end_date else '' }}">
+            </div>
+            <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+        </form>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0-alpha1/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

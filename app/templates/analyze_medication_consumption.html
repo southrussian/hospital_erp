@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Анализ расхода препаратов</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0-alpha1/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+        }
+        .dashboard-header {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .chart-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            transition: transform 0.2s;
+        }
+        .chart-card:hover {
+            transform: translateY(-5px);
+        }
+        .chart-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container py-4">
+    <div class="dashboard-header">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="mb-0">Анализ расхода препаратов</h1>
+            <div class="d-flex gap-2">
+                <a href="{{ url_for('view_prescriptions') }}" class="btn btn-outline-primary">
+                    <i class="fas fa-list"></i> К списку
+                </a>
+                <a href="{{ url_for('dashboard') }}" class="btn btn-primary">
+                    <i class="fas fa-home"></i> На главную
+                </a>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-12">
+                <div class="chart-card">
+                    <div class="chart-title">Расход лекарств по названию</div>
+                    {{ by_medicine|safe }}
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="chart-card">
+                    <div class="chart-title">Расход лекарств по врачам</div>
+                    {{ by_doctor|safe }}
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="chart-card">
+                    <div class="chart-title">Расход лекарств по датам</div>
+                    {{ by_date|safe }}
+                </div>
+            </div>
+
+            <div class="col-12">
+                <div class="chart-card">
+                    <div class="chart-title">Распределение длительности назначений</div>
+                    {{ duration_dist|safe }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0-alpha1/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

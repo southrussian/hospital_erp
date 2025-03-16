@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Просмотр пациентов</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0-alpha1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             background-color: #f7f7f7;
@@ -13,61 +14,87 @@
         }
         .container {
             margin-top: 50px;
-            max-width: 1200px;
+            max-width: 1400px;
+        }
+        .table-container {
+            overflow-x: auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
         }
         .table {
-            background-color: #ffffff;
-            border-radius: 20px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            margin-top: 20px;
+            margin-bottom: 0;
         }
-        .table th, .table td {
-            vertical-align: middle;
-        }
-        .btn {
-            border-radius: 15px;
-            padding: 10px 20px;
-            background-color: #007aff;
-            border: none;
-            color: #fff;
-            font-weight: bold;
-        }
-        .btn:hover {
-            background-color: #0061d5;
-        }
-        .alert {
-            border-radius: 10px;
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
+        .status-badge {
+            font-size: 0.85rem;
+            padding: 0.4em 0.75em;
         }
         .action-buttons {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
+            white-space: nowrap;
         }
-        .action-buttons a {
-            margin-right: 10px;
+        .datetime-column {
+            min-width: 160px;
+        }
+        .btn {
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 0.875rem;
+        }
+        .btn-primary {
+            background-color: #007aff;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #0061d5;
+        }
+        .btn-outline-primary {
+            border-color: #007aff;
+            color: #007aff;
+        }
+        .btn-outline-primary:hover {
+            background-color: #007aff;
+            color: #fff;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            border: none;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+            border: none;
+        }
+        .btn-danger:hover {
+            background-color: #c82333;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="header">
-        <h1>Пациенты</h1>
-        <div class="action-buttons">
-            <a href="{{ url_for('dashboard') }}" class="btn btn-primary">Назад на панель управления</a>
-            <a href="{{ url_for('add_patient') }}" class="btn btn-success">Добавить пациента</a>
-
-            <a href="{{ url_for('view_patients', sort='asc') }}" class="btn btn-secondary">Сортировать по фамилии (А-Я)</a>
-            <a href="{{ url_for('view_patients', sort='desc') }}" class="btn btn-secondary">Сортировать по фамилии (Я-А)</a>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">Пациенты</h1>
+        <div class="d-flex gap-2">
+            <a href="{{ url_for('dashboard') }}" class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left"></i> Назад
+            </a>
+            <a href="{{ url_for('add_patient') }}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Добавить пациента
+            </a>
+            <a href="{{ url_for('view_patients', sort='asc') }}" class="btn btn-secondary">
+                <i class="fas fa-sort-alpha-down"></i> А-Я
+            </a>
+            <a href="{{ url_for('view_patients', sort='desc') }}" class="btn btn-secondary">
+                <i class="fas fa-sort-alpha-down-alt"></i> Я-А
+            </a>
         </div>
     </div>
-    <div class="table-responsive">
-        <table class="table table-striped table-hover">
-            <thead>
+
+    <div class="table-container">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
                 <tr>
                     <th>Фамилия</th>
                     <th>Имя</th>
@@ -75,35 +102,60 @@
                     <th>Дата рождения</th>
                     <th>Пол</th>
                     <th>Адрес</th>
-                    <th>Номер телефона</th>
+                    <th>Телефон</th>
                     <th>Контактное лицо</th>
-                    <th>Серия паспорта</th>
-                    <th>Номер паспорта</th>
-                    <th>Номер ОМС</th>
-                    <th>Номер комнаты</th>
+                    <th>Паспорт</th>
+                    <th>ОМС</th>
                     <th>Действия</th>
                 </tr>
             </thead>
             <tbody>
                 {% for patient in patients %}
-                <tr>
+                <tr onclick="window.location='{{ url_for('patient_details', patient_id=patient.patient_id) }}'" style="cursor: pointer;">
                     <td>{{ patient.last_name }}</td>
                     <td>{{ patient.first_name }}</td>
-                    <td>{{ patient.middle_name }}</td>
-                    <td>{{ patient.birth_date }}</td>
-                    <td>{{ patient.gender }}</td>
-                    <td>{{ patient.address }}</td>
-                    <td>{{ patient.phone_number }}</td>
-                    <td>{{ patient.emergency_contact }}</td>
-                    <td>{{ patient.passport_series }}</td>
-                    <td>{{ patient.passport_number }}</td>
-                    <td>{{ patient.oms_number }}</td>
-                    <td>{{ patient.room_id }}</td>
+                    <td>{{ patient.middle_name or '—' }}</td>
                     <td>
-                        <a href="{{ url_for('edit_patient', patient_id=patient.patient_id) }}" class="btn btn-primary btn-sm">Редактировать</a>
-                        <form action="{{ url_for('delete_patient', patient_id=patient.patient_id) }}" method="post" style="display:inline;">
-                            <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+                        {% if patient.birth_date %}
+                            {{ patient.birth_date.strftime('%d.%m.%Y') }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+                    <td>{{ patient.gender }}</td>
+                    <td>{{ patient.address or '—' }}</td>
+                    <td>{{ patient.phone_number or '—' }}</td>
+                    <td>{{ patient.emergency_contact or '—' }}</td>
+                    <td>
+                        {% if patient.passport_series and patient.passport_number %}
+                            {{ patient.passport_series }} {{ patient.passport_number }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+                    <td>{{ patient.oms_number }}</td>
+                    <td class="action-buttons">
+                        <a href="{{ url_for('edit_patient', patient_id=patient.patient_id) }}"
+                           class="btn btn-sm btn-outline-primary"
+                           title="Редактировать">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <form action="{{ url_for('delete_patient', patient_id=patient.patient_id) }}"
+                              method="POST"
+                              class="d-inline"
+                              onsubmit="return confirm('Вы уверены, что хотите удалить этого пациента?');">
+                            <button type="submit"
+                                    class="btn btn-sm btn-outline-danger"
+                                    title="Удалить">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
                         </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="12" class="text-center text-muted py-4">
+                        Нет данных о пациентах
                     </td>
                 </tr>
                 {% endfor %}

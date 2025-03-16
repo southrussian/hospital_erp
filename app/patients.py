@@ -1,6 +1,6 @@
 from flask import render_template, redirect, url_for, flash, request
 from sqlalchemy.exc import IntegrityError
-from models import Patient, db
+from models import Patient, MedicalRecord, db
 from datetime import datetime
 
 
@@ -22,7 +22,7 @@ def setup_view_patients_routes(app):
 
         except Exception as e:
             flash(f"Ошибка при загрузке пациентов: {str(e)}", "danger")
-            return redirect(url_for('index'))  # Перенаправление на главную страницу
+            return redirect(url_for('dashboard'))  # Перенаправление на главную страницу
 
 
 def setup_add_patient_routes(app):
@@ -141,3 +141,25 @@ def setup_delete_patient_routes(app):
             db.session.rollback()
             flash(f"Ошибка при удалении пациента: {str(e)}", "danger")
         return redirect(url_for('view_patients'))
+
+
+def setup_patient_details_routes(app):
+    @app.route('/patient/<int:patient_id>')
+    def patient_details(patient_id):
+        try:
+            patient = Patient.query.options(
+                db.joinedload(Patient.medical_records)
+                .joinedload(MedicalRecord.doctor),
+                db.joinedload(Patient.medical_records)
+                .joinedload(MedicalRecord.admission)
+            ).get_or_404(patient_id)
+
+            return render_template(
+                'patient_details.html',
+                patient=patient,
+                records=patient.medical_records
+            )
+        except Exception as e:
+            flash(f"Ошибка при загрузке данных: {str(e)}", "danger")
+            print(e)
+            return redirect(url_for('view_patients'))
