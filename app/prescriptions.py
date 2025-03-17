@@ -279,3 +279,47 @@ def setup_delete_prescription_routes(app):
             db.session.rollback()
             flash(f"Ошибка при удалении: {e}", "danger")
         return redirect(url_for('view_prescriptions'))
+
+
+def setup_prescription_analytics_routes(app):
+    @app.route('/prescription_analytics')
+    def prescription_analytics():
+        try:
+            top_medicines = db.session.query(
+                Medicine.name,
+                db.func.count(Prescription.prescription_id).label('count')
+            ).join(Prescription.medicine).group_by(Medicine.name).order_by(db.desc('count')).limit(10).all()
+
+            graphs = {
+                'medicines_bar': prepare_medicines_chart(top_medicines),
+            }
+
+            return render_template('prescription_analytics.html', graphs=graphs)
+
+        except Exception as e:
+            flash(f"Ошибка при загрузке аналитики: {str(e)}", "danger")
+            print(e)
+            return redirect(url_for('view_prescriptions'))
+
+
+def prepare_medicines_chart(data):
+    if not data:
+        return None
+
+    medicines = [item[0] for item in data]
+    counts = [item[1] for item in data]
+
+    return {
+        'data': [{
+            'x': medicines,
+            'y': counts,
+            'type': 'bar',
+            'marker': {'color': '#2196F3'}
+        }],
+        'layout': {
+            'title': 'Наиболее назначаемые лекарства',
+            'xaxis': {'title': 'Лекарство'},
+            'yaxis': {'title': 'Количество назначений'},
+            'height': 400
+        }
+    }

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Аналитика рецептов</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0-alpha1/css/bootstrap.min.css">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <h1>Аналитика рецептов</h1>
+        <a href="{{ url_for('view_prescriptions') }}" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left"></i> Назад к рецептам
+        </a>
+    </div>
+
+    <div class="row g-4">
+        <!-- График лекарств -->
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div id="medicinesChart"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        {% if graphs.medicines_bar and graphs.medicines_bar.data %}
+            Plotly.newPlot('medicinesChart',
+                {{ graphs.medicines_bar.data | tojson | safe }},
+                {{ graphs.medicines_bar.layout | tojson | safe }}
+            );
+        {% endif %}
+    });
+</script>
+
+</body>
+</html>

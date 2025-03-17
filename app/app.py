@@ -23,7 +23,8 @@ from beds import setup_view_beds_routes, setup_add_bed_routes, setup_edit_bed_ro
 from operations import (setup_view_operations_routes, setup_add_operation_routes, setup_edit_operation_routes,
                         setup_delete_operation_routes)
 from prescriptions import (setup_view_prescriptions_routes, setup_add_prescription_routes,
-                           setup_edit_prescription_routes, setup_delete_prescription_routes)
+                           setup_edit_prescription_routes, setup_delete_prescription_routes,
+                           setup_prescription_analytics_routes)
 from medical_records import (setup_view_medical_records_routes, setup_add_medical_record_routes,
                              setup_edit_medical_record_routes, setup_delete_medical_record_routes)
 from hospitalization_history import (setup_view_hospitalization_history_routes,
@@ -109,6 +110,7 @@ setup_view_prescriptions_routes(app)
 setup_add_prescription_routes(app)
 setup_edit_prescription_routes(app)
 setup_delete_prescription_routes(app)
+setup_prescription_analytics_routes(app)
 
 setup_view_medical_records_routes(app)
 setup_add_medical_record_routes(app)
