@@ -14,6 +14,7 @@ def setup_view_beds_routes(app):
             ).all()
             return render_template('view_beds.html', beds=beds)
         except Exception as e:
+            app.logger.error(e)
             flash(f"Ошибка при загрузке данных: {str(e)}", "danger")
             return redirect(url_for('index'))
 
@@ -26,11 +27,9 @@ def setup_add_bed_routes(app):
 
         if request.method == 'POST':
             try:
-                # Валидация данных
                 room_id = int(request.form['room_id'])
                 patient_id = request.form.get('patient_id')  # Может быть None
 
-                # Проверка доступности мест в палате
                 room = Room.query.get_or_404(room_id)
                 if room.available_beds() <= 0:
                     flash('Палата полностью заполнена! Невозможно добавить койку.', 'danger')
@@ -43,7 +42,6 @@ def setup_add_bed_routes(app):
                         flash('Этот пациент уже привязан к другой койке!', 'danger')
                         return redirect(url_for('add_bed'))
 
-                # Создание койки
                 bed = Bed(
                     room_id=room_id,
                     patient_id=patient_id
@@ -54,13 +52,16 @@ def setup_add_bed_routes(app):
                 flash('Койка успешно добавлена!', 'success')
                 return redirect(url_for('view_beds'))
 
-            except ValueError:
+            except ValueError as e:
+                app.logger.error(e)
                 db.session.rollback()
                 flash("Некорректные данные в форме", "danger")
-            except IntegrityError:
+            except IntegrityError as e:
+                app.logger.error(e)
                 db.session.rollback()
                 flash("Ошибка целостности данных", "danger")
             except Exception as e:
+                app.logger.error(e)
                 db.session.rollback()
                 flash(f"Ошибка при добавлении: {str(e)}", "danger")
 
@@ -101,10 +102,12 @@ def setup_edit_bed_routes(app):
                 flash('Койка успешно обновлена!', 'success')
                 return redirect(url_for('view_beds'))
 
-            except ValueError:
+            except ValueError as e:
+                app.logger.error(e)
                 db.session.rollback()
                 flash("Некорректные данные в форме", "danger")
-            except IntegrityError:
+            except IntegrityError as e:
+                app.logger.error(e)
                 db.session.rollback()
                 flash("Ошибка целостности данных", "danger")
             except Exception as e:
@@ -122,7 +125,6 @@ def setup_delete_bed_routes(app):
     def delete_bed(bed_id):
         bed = Bed.query.get_or_404(bed_id)
         try:
-            # Проверка, что койка не занята
             if bed.patient_id:
                 flash('Невозможно удалить занятую койку!', 'danger')
                 return redirect(url_for('view_beds'))
@@ -131,9 +133,11 @@ def setup_delete_bed_routes(app):
             db.session.commit()
             flash('Койка успешно удалена!', 'success')
         except IntegrityError as e:
+            app.logger.error(e)
             db.session.rollback()
             flash(f"Ошибка целостности данных: {str(e)}", "danger")
         except Exception as e:
+            app.logger.error(e)
             db.session.rollback()
             flash(f"Ошибка при удалении: {str(e)}", "danger")
 

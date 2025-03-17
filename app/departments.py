@@ -6,9 +6,12 @@ from models import *
 def setup_view_departments_routes(app):
     @app.route('/view_departments')
     def view_departments():
-        departments = Department.query.all()
-        return render_template('view_departments.html', departments=departments)
-
+        try:
+            departments = Department.query.all()
+            return render_template('view_departments.html', departments=departments)
+        except Exception as e:
+            app.logger.error(e)
+            
 
 def setup_add_department_routes(app):
     @app.route('/add_department', methods=['GET', 'POST'])
@@ -27,10 +30,12 @@ def setup_add_department_routes(app):
                 db.session.commit()
                 flash("Department created!", "success")
                 return redirect(url_for('view_departments'))
-            except IntegrityError:
+            except IntegrityError as e:
+                app.logger.error(e)
                 db.session.rollback()
                 flash("Department exists", "danger")
             except Exception as e:
+                app.logger.error(e)
                 db.session.rollback()
                 flash(f"Error: {str(e)}", "danger")
 
@@ -69,7 +74,6 @@ def setup_delete_department_routes(app):
         department = Department.query.get_or_404(department_id)
 
         try:
-            # Если осталась связь с Doctor
             if hasattr(department, 'doctors') and department.doctors:
                 flash("Delete doctors first", "danger")
                 return redirect(url_for('view_departments'))
@@ -78,6 +82,7 @@ def setup_delete_department_routes(app):
             db.session.commit()
             flash("Deleted!", "success")
         except Exception as e:
+            app.logger.error(e)
             db.session.rollback()
             flash(f"Error: {str(e)}", "danger")
 

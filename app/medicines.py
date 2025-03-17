@@ -6,8 +6,11 @@ from sqlalchemy.exc import IntegrityError
 def setup_view_medicine_routes(app):
     @app.route('/view_medicine')
     def view_medicine():
-        medicines = Medicine.query.all()
-        return render_template('view_medicines.html', medicines=medicines)
+        try:
+            medicines = Medicine.query.all()
+            return render_template('view_medicines.html', medicines=medicines)
+        except Exception as e:
+            app.logger.error(e)
 
 
 def setup_add_medicine_routes(app):

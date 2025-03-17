@@ -18,6 +18,7 @@ def setup_view_admissions_routes(app):
                                    admissions=admissions)
         except Exception as e:
             flash(f"Ошибка загрузки данных: {str(e)}", "danger")
+            app.logger.error(e)
             return redirect(url_for('dashboard'))
 
 
@@ -49,7 +50,6 @@ def setup_add_admission_routes(app):
                     flash("Некорректный пользователь для оформления поступления", "danger")
                     return redirect(url_for('add_admission'))
 
-                # Создание объекта
                 admission = Admission(
                     patient_id=patient.patient_id,
                     admission_date=admission_date,
@@ -66,16 +66,17 @@ def setup_add_admission_routes(app):
                 return redirect(url_for('view_admissions'))
 
             except ValueError as e:
+                app.logger.error(e)
                 db.session.rollback()
                 flash(f"Ошибка формата данных: {str(e)}", "danger")
             except IntegrityError:
                 db.session.rollback()
                 flash("Ошибка целостности данных", "danger")
             except Exception as e:
+                app.logger.error(e)
                 db.session.rollback()
                 flash(f"Ошибка при создании: {str(e)}", "danger")
 
-        # Для GET-запроса
         patients = Patient.query.order_by(Patient.last_name).all()
         doctors = User.query.filter(User.role.in_(['doctor', 'admin'])).all()
         return render_template('add_admission.html',
@@ -93,7 +94,6 @@ def setup_edit_admission_routes(app):
 
         if request.method == 'POST':
             try:
-                # Обновление данных
                 admission.admission_date = datetime.fromisoformat(request.form['admission_date'])
                 admission.discharge_date = datetime.fromisoformat(request.form['discharge_date']) if request.form[
                     'discharge_date'] else None
@@ -101,7 +101,6 @@ def setup_edit_admission_routes(app):
                 admission.diagnosis = request.form.get('diagnosis')
                 admission.is_active = admission.discharge_date is None
 
-                # Обновление пользователя
                 new_user = User.query.get(request.form['admitted_by'])
                 if new_user and new_user.role in ['doctor', 'admin']:
                     admission.admitted_by = new_user.user_id
@@ -136,7 +135,6 @@ def setup_delete_admission_routes(app):
     def delete_admission(admission_id):
         admission = Admission.query.get_or_404(admission_id)
         try:
-            # Проверка связанных записей
             if admission.hospitalizations:
                 flash("Невозможно удалить поступление с привязанными госпитализациями", "danger")
                 return redirect(url_for('view_admissions'))
@@ -145,9 +143,11 @@ def setup_delete_admission_routes(app):
             db.session.commit()
             flash("Поступление успешно удалено!", "success")
         except IntegrityError as e:
+            app.logger.error(e)
             db.session.rollback()
             flash(f"Ошибка целостности данных: {str(e)}", "danger")
         except Exception as e:
+            app.logger.error(e)
             db.session.rollback()
             flash(f"Ошибка при удалении: {str(e)}", "danger")
 
@@ -211,7 +211,6 @@ def setup_analyze_admissions_routes(app):
             return render_template('analyze_admissions.html', **graphs)
 
         except Exception as e:
-            # Добавьте логирование ошибки
             app.logger.error(f"Ошибка анализа: {str(e)}", exc_info=True)
             flash("Невозможно построить графики. Проверьте данные.", "danger")
             return render_template('analyze_admissions.html')  # Возвращаем пустую страницу

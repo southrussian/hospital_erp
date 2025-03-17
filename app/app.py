@@ -125,9 +125,12 @@ setup_delete_hospitalization_history_routes(app)
 
 @app.route('/')
 def dashboard():
-    if 'user_id' not in session:
-        flash('Пожалуйста, войдите для доступа к этой странице.', 'warning')
-        return redirect(url_for('login'))
+    try:
+        if 'user_id' not in session:
+            flash('Пожалуйста, войдите для доступа к этой странице.', 'warning')
+            return redirect(url_for('login'))
+    except Exception as e:
+        app.logger.error(e)
     app.logger.info(f"Доступ к панели управления пользователем ID: {session['user_id']}.")
     return render_template('dashboard.html')
 

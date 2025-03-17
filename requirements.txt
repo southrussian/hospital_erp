@@ -5,3 +5,5 @@ plotly
 sqlalchemy
 pandas
 matplotlib
+torch
+torchvision
