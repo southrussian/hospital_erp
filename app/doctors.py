@@ -7,8 +7,25 @@ from datetime import datetime
 def setup_view_doctors_routes(app):
     @app.route('/view_doctors')
     def view_doctors():
-        doctors = Doctor.query.all()
-        return render_template('view_doctors.html', doctors=doctors)
+        sort_order = request.args.get('sort', 'asc')  # По умолчанию сортировка по возрастанию
+        search_query = request.args.get('search', '').strip()  # Получаем поисковый запрос
+        doctors_query = Doctor.query
+
+        if search_query:
+            doctors_query = doctors_query.filter(
+                (Doctor.last_name.ilike(f'%{search_query}%')) |
+                (Doctor.first_name.ilike(f'%{search_query}%'))
+            )
+
+        if sort_order == 'asc':
+            doctors_query = doctors_query.order_by(Doctor.last_name.asc())
+        else:
+            doctors_query = doctors_query.order_by(Doctor.last_name.desc())
+
+        doctors = doctors_query.all()
+
+        return render_template('view_doctors.html', doctors=doctors,
+                               search_query=search_query, sort_order=sort_order)
 
 
 def setup_add_doctor_routes(app):

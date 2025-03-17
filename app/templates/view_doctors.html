@@ -89,6 +89,18 @@
             <a href="{{ url_for('add_doctor') }}" class="btn btn-primary">
                 <i class="fas fa-plus"></i> Добавить врача
             </a>
+            <a href="{{ url_for('view_doctors', sort='asc') }}" class="btn btn-secondary">
+                <i class="fas fa-sort-alpha-down"></i> А-Я
+            </a>
+            <a href="{{ url_for('view_doctors', sort='desc') }}" class="btn btn-secondary">
+                <i class="fas fa-sort-alpha-down-alt"></i> Я-А
+            </a>
+            <form action="{{ url_for('view_doctors') }}" method="GET" class="d-flex">
+            <input type="text" name="search" class="form-control me-2" placeholder="Поиск врача..." value="{{ request.args.get('search', '') }}">
+            <button type="submit" class="btn btn-outline-secondary">
+                <i class="fas fa-search"></i>
+            </button>
+        </form>
         </div>
     </div>
 
@@ -96,10 +108,9 @@
         <table class="table table-hover align-middle">
             <thead class="table-light">
                 <tr>
-                    <th>ID</th>
+                    <th>Фамилия</th>
                     <th>Имя</th>
                     <th>Отчество</th>
-                    <th>Фамилия</th>
                     <th>Специализация</th>
                     <th>Дата рождения</th>
                     <th>Номер телефона</th>
@@ -110,10 +121,9 @@
             <tbody>
                 {% for doctor in doctors %}
                 <tr>
-                    <td>{{ doctor.doctor_id }}</td>
+                    <td>{{ doctor.last_name }}</td>
                     <td>{{ doctor.first_name }}</td>
                     <td>{{ doctor.middle_name }}</td>
-                    <td>{{ doctor.last_name }}</td>
                     <td>{{ doctor.specialization }}</td>
                     <td>{{ doctor.birth_date.strftime('%d.%m.%Y') }}</td>
                     <td>{{ doctor.phone_number }}</td>
@@ -124,16 +134,6 @@
                            title="Редактировать">
                             <i class="fas fa-edit"></i>
                         </a>
-                        <form action="{{ url_for('delete_doctor', doctor_id=doctor.doctor_id) }}"
-                              method="POST"
-                              class="d-inline"
-                              onsubmit="return confirm('Вы уверены, что хотите удалить этого врача?');">
-                            <button type="submit"
-                                    class="btn btn-sm btn-outline-danger"
-                                    title="Удалить">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                        </form>
                     </td>
                 </tr>
                 {% else %}

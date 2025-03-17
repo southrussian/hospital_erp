@@ -9,7 +9,17 @@ def setup_view_patients_routes(app):
     def view_patients():
         try:
             sort_order = request.args.get('sort', 'asc')  # По умолчанию сортировка по возрастанию
+            search_query = request.args.get('search', '').strip()  # Получаем поисковый запрос
+
             patients_query = Patient.query
+
+            if search_query:
+                patients_query = patients_query.filter(
+                    (Patient.last_name.ilike(f'%{search_query}%')) |
+                    (Patient.first_name.ilike(f'%{search_query}%')) |
+                    (Patient.middle_name.ilike(f'%{search_query}%')) |
+                    (Patient.oms_number.ilike(f'%{search_query}%'))
+                )
 
             # Сортировка по фамилии
             if sort_order == 'asc':
@@ -18,7 +28,8 @@ def setup_view_patients_routes(app):
                 patients_query = patients_query.order_by(Patient.last_name.desc())
 
             patients = patients_query.all()
-            return render_template('view_patients.html', patients=patients, sort_order=sort_order)
+            return render_template('view_patients.html', patients=patients, sort_order=sort_order,
+                                   search_query=search_query)
 
         except Exception as e:
             flash(f"Ошибка при загрузке пациентов: {str(e)}", "danger")
