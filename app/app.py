@@ -27,10 +27,6 @@ from prescriptions import (setup_view_prescriptions_routes, setup_add_prescripti
                            setup_prescription_analytics_routes)
 from medical_records import (setup_view_medical_records_routes, setup_add_medical_record_routes,
                              setup_edit_medical_record_routes, setup_delete_medical_record_routes)
-from hospitalization_history import (setup_view_hospitalization_history_routes,
-                                     setup_add_hospitalization_history_routes,
-                                     setup_edit_hospitalization_history_routes,
-                                     setup_delete_hospitalization_history_routes)
 from flask_migrate import Migrate
 
 app = Flask(__name__)
@@ -116,11 +112,6 @@ setup_view_medical_records_routes(app)
 setup_add_medical_record_routes(app)
 setup_edit_medical_record_routes(app)
 setup_delete_medical_record_routes(app)
-
-setup_view_hospitalization_history_routes(app)
-setup_add_hospitalization_history_routes(app)
-setup_edit_hospitalization_history_routes(app)
-setup_delete_hospitalization_history_routes(app)
 
 
 @app.route('/')
