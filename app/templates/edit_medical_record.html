@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Изменить медицинскую запись</title>
+    <title>Редактировать медицинскую запись</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0-alpha1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             background-color: #f7f7f7;
@@ -13,110 +14,94 @@
         }
         .container {
             margin-top: 50px;
-            max-width: 600px;
+            max-width: 800px;
         }
-        .form-control {
-            border-radius: 15px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            background-color: #fff;
+        .form-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+            padding: 2rem;
         }
-        .btn {
-            border-radius: 15px;
-            padding: 12px 25px;
-            background-color: #007aff;
-            border: none;
-            color: #fff;
-            font-weight: bold;
+        .form-group {
+            margin-bottom: 1.5rem;
         }
-        .btn:hover {
-            background-color: #0061d5;
+        .form-group label {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
         }
-        .alert {
-            border-radius: 10px;
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .card {
-            background-color: #ffffff;
-            border-radius: 20px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-        }
-        .card-header {
-            background-color: #f0f0f5;
-            border-radius: 15px 15px 0 0;
-            font-size: 1.5rem;
-            color: #333;
-            font-weight: bold;
+        .form-control:focus {
+            border-color: #86b7fe;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="card">
-        <div class="card-header">
-            Изменить медицинскую запись
-        </div>
-        <div class="card-body">
-            <!-- Выводим сообщения об успехе или ошибке -->
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    <ul class="list-unstyled">
-                        {% for category, message in messages %}
-                            <li class="alert alert-{{ category }}">
-                                {{ message }}
-                            </li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-            {% endwith %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">Редактировать медицинскую запись</h1>
+        <a href="{{ url_for('view_medical_records') }}" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left"></i> Назад
+        </a>
+    </div>
 
-            <form method="POST">
-                <div class="mb-3">
-                    <label for="patient_id" class="form-label">Пациент</label>
-                    <select class="form-control" id="patient_id" name="patient_id" required>
-                        {% for patient in patients %}
-                            <option value="{{ patient.patient_id }}" {% if patient.patient_id == record.patient_id %}selected{% endif %}>{{ patient.first_name }} {{ patient.last_name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
+    <div class="form-container">
+        <form method="POST" action="{{ url_for('edit_medical_record', record_id=record.record_id) }}">
+            <div class="form-group">
+                <label for="patient_id">Пациент</label>
+                <select class="form-control" id="patient_id" name="patient_id" required>
+                    {% for patient in patients %}
+                        <option value="{{ patient.patient_id }}" {% if patient.patient_id == record.patient_id %}selected{% endif %}>
+                            {{ patient.last_name }} {{ patient.first_name }} ({{ patient.oms_number }})
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
 
-                <div class="mb-3">
-                    <label for="doctor_id" class="form-label">Врач</label>
-                    <select class="form-control" id="doctor_id" name="doctor_id" required>
-                        {% for doctor in doctors %}
-                            <option value="{{ doctor.doctor_id }}" {% if doctor.doctor_id == record.doctor_id %}selected{% endif %}>{{ doctor.first_name }} {{ doctor.last_name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
+            <div class="form-group">
+                <label for="doctor_id">Врач</label>
+                <select class="form-control" id="doctor_id" name="doctor_id">
+                    <option value="">Выберите врача</option>
+                    {% for doctor in doctors %}
+                        <option value="{{ doctor.doctor_id }}" {% if record.doctor_id and record.doctor_id == doctor.doctor_id %}selected{% endif %}>
+                            {{ doctor.last_name }} {{ doctor.first_name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
 
-                <div class="mb-3">
-                    <label for="diagnosis" class="form-label">Диагноз</label>
-                    <input type="text" class="form-control" id="diagnosis" name="diagnosis" required value="{{ record.diagnosis }}">
-                </div>
+            <div class="form-group">
+                <label for="admission_id">Госпитализация</label>
+                <select class="form-control" id="admission_id" name="admission_id">
+                    <option value="">Не указана</option>
+                    {% for admission in admissions %}
+                        <option value="{{ admission.admission_id }}" {% if record.admission_id and record.admission_id == admission.admission_id %}selected{% endif %}>
+                            Поступление №{{ admission.admission_id }} ({{ admission.patient.last_name }})
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
 
-                <div class="mb-3">
-                    <label for="treatment" class="form-label">Лечение</label>
-                    <input type="text" class="form-control" id="treatment" name="treatment" required value="{{ record.treatment }}">
-                </div>
+            <div class="form-group">
+                <label for="record_type">Тип записи</label>
+                <select class="form-control" id="record_type" name="record_type" required>
+                    {% for record_type in record_types %}
+                        <option value="{{ record_type }}" {% if record.record_type == record_type %}selected{% endif %}>
+                            {{ record_type|replace('_', ' ')|title }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
 
-                <div class="mb-3">
-                    <label for="notes" class="form-label">Заметки</label>
-                    <textarea class="form-control" id="notes" name="notes" rows="3" required>{{ record.notes }}</textarea>
-                </div>
+            <div class="form-group">
+                <label for="content">Содержание</label>
+                <textarea class="form-control" id="content" name="content" rows="5" required>{{ record.content }}</textarea>
+            </div>
 
-                <div class="mb-3">
-                    <label for="record_date" class="form-label">Дата записи</label>
-                    <input type="date" class="form-control" id="record_date" name="record_date" required value="{{ record.record_date }}">
-                </div>
-
-                <button type="submit" class="btn btn-primary w-100">Сохранить изменения</button>
-            </form>
-        </div>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Сохранить изменения
+            </button>
+        </form>
     </div>
 </div>
 
