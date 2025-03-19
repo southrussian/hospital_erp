@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Изменить отделение</title>
+    <title>Редактировать отделение</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0-alpha1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -14,104 +14,51 @@
         }
         .container {
             margin-top: 50px;
-            max-width: 600px;
+            max-width: 800px;
         }
-        .form-control {
-            border-radius: 8px;
-            padding: 10px 15px;
-            border: 1px solid #ddd;
-            background-color: #fff;
-        }
-        .form-control:focus {
-            border-color: #007aff;
-            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
-        }
-        .btn {
-            border-radius: 8px;
-            padding: 10px 20px;
-            font-size: 0.875rem;
-        }
-        .btn-primary {
-            background-color: #007aff;
-            border: none;
-        }
-        .btn-primary:hover {
-            background-color: #0061d5;
-        }
-        .alert {
-            border-radius: 8px;
-            padding: 12px 16px;
-        }
-        .card {
-            background-color: #ffffff;
+        .form-container {
+            background: white;
             border-radius: 12px;
             box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
-            border: none;
+            padding: 2rem;
         }
-        .card-header {
-            background-color: transparent;
-            border-bottom: 1px solid #eee;
-            padding: 20px;
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #333;
+        .form-group {
+            margin-bottom: 1.5rem;
         }
-        .card-body {
-            padding: 20px;
-        }
-        .form-label {
+        .form-group label {
             font-weight: 500;
-            color: #555;
+            margin-bottom: 0.5rem;
+        }
+        .form-control:focus {
+            border-color: #86b7fe;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="card">
-        <div class="card-header">
-            Изменить отделение
-        </div>
-        <div class="card-body">
-            <!-- Выводим сообщения об успехе или ошибке -->
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    <ul class="list-unstyled">
-                        {% for category, message in messages %}
-                            <li class="alert alert-{{ category }}">
-                                {{ message }}
-                            </li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-            {% endwith %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">Редактировать отделение</h1>
+        <a href="{{ url_for('view_departments') }}" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left"></i> Назад
+        </a>
+    </div>
 
-            <form method="POST">
-                <div class="mb-3">
-                    <label for="name" class="form-label">Название</label>
-                    <input type="text" class="form-control" id="name" name="name" required value="{{ department.name }}">
-                </div>
+    <div class="form-container">
+        <form method="POST" action="{{ url_for('edit_department', department_id=department.department_id) }}">
+            <div class="form-group">
+                <label for="name">Название отделения</label>
+                <input type="text" class="form-control" id="name" name="name" value="{{ department.name }}" required>
+                <small class="form-text text-muted">
+                    Введите уникальное название отделения.
+                </small>
+            </div>
 
-                <div class="mb-3">
-                    <label for="location" class="form-label">Местоположение</label>
-                    <input type="text" class="form-control" id="location" name="location" required value="{{ department.location }}">
-                </div>
-
-                <div class="mb-3">
-                    <label for="phone_number" class="form-label">Номер телефона</label>
-                    <input type="text" class="form-control" id="phone_number" name="phone_number" required value="{{ department.phone_number }}">
-                </div>
-
-                <div class="d-flex justify-content-between align-items-center">
-                    <a href="{{ url_for('view_departments') }}" class="btn btn-outline-primary">
-                        <i class="fas fa-arrow-left"></i> Назад
-                    </a>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Сохранить изменения
-                    </button>
-                </div>
-            </form>
-        </div>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Сохранить изменения
+            </button>
+        </form>
     </div>
 </div>
 

@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Изменить врача</title>
+    <title>Редактировать врача</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0-alpha1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             background-color: #f7f7f7;
@@ -13,120 +14,100 @@
         }
         .container {
             margin-top: 50px;
-            max-width: 600px;
+            max-width: 800px;
         }
-        .form-control {
-            border-radius: 15px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            background-color: #fff;
+        .form-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+            padding: 2rem;
         }
-        .btn {
-            border-radius: 15px;
-            padding: 12px 25px;
-            background-color: #007aff;
-            border: none;
-            color: #fff;
-            font-weight: bold;
+        .form-group {
+            margin-bottom: 1.5rem;
         }
-        .btn:hover {
-            background-color: #0061d5;
+        .form-group label {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
         }
-        .alert {
-            border-radius: 10px;
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .card {
-            background-color: #ffffff;
-            border-radius: 20px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-        }
-        .card-header {
-            background-color: #f0f0f5;
-            border-radius: 15px 15px 0 0;
-            font-size: 1.5rem;
-            color: #333;
-            font-weight: bold;
+        .form-control:focus {
+            border-color: #86b7fe;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="card">
-        <div class="card-header">
-            Изменить врача
-        </div>
-        <div class="card-body">
-            <!-- Выводим сообщения об успехе или ошибке -->
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    <ul class="list-unstyled">
-                        {% for category, message in messages %}
-                            <li class="alert alert-{{ category }}">
-                                {{ message }}
-                            </li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-            {% endwith %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">Редактировать врача</h1>
+        <a href="{{ url_for('view_doctors') }}" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left"></i> Назад
+        </a>
+    </div>
 
-            <form method="POST">
-                <div class="mb-3">
-                    <label for="user_id" class="form-label">ID пользователя</label>
-                    <select class="form-control" id="user_id" name="user_id" required>
-                        {% for user in users %}
-                            <option value="{{ user.user_id }}" {% if user.user_id == doctor.user_id %}selected{% endif %}>{{ user.username }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
+    <div class="form-container">
+        <form method="POST" action="{{ url_for('edit_doctor', doctor_id=doctor.doctor_id) }}">
+            <div class="form-group">
+                <label for="user_id">Пользователь</label>
+                <select class="form-control" id="user_id" name="user_id">
+                    <option value="">Не назначен</option>
+                    {% for user in users %}
+                        <option value="{{ user.user_id }}" {% if doctor.user_id and doctor.user_id == user.user_id %}selected{% endif %}>
+                            {{ user.username }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
 
-                <div class="mb-3">
-                    <label for="first_name" class="form-label">Имя</label>
-                    <input type="text" class="form-control" id="first_name" name="first_name" required value="{{ doctor.first_name }}">
-                </div>
+            <div class="form-group">
+                <label for="first_name">Имя</label>
+                <input type="text" class="form-control" id="first_name" name="first_name" value="{{ doctor.first_name }}" required>
+            </div>
 
-                <div class="mb-3">
-                    <label for="middle_name" class="form-label">Отчество</label>
-                    <input type="text" class="form-control" id="middle_name" name="middle_name" value="{{ doctor.middle_name }}">
-                </div>
+            <div class="form-group">
+                <label for="middle_name">Отчество</label>
+                <input type="text" class="form-control" id="middle_name" name="middle_name" value="{{ doctor.middle_name or '' }}">
+            </div>
 
-                <div class="mb-3">
-                    <label for="last_name" class="form-label">Фамилия</label>
-                    <input type="text" class="form-control" id="last_name" name="last_name" required value="{{ doctor.last_name }}">
-                </div>
+            <div class="form-group">
+                <label for="last_name">Фамилия</label>
+                <input type="text" class="form-control" id="last_name" name="last_name" value="{{ doctor.last_name }}" required>
+            </div>
 
-                <div class="mb-3">
-                    <label for="specialization" class="form-label">Специализация</label>
-                    <input type="text" class="form-control" id="specialization" name="specialization" required value="{{ doctor.specialization }}">
-                </div>
+            <div class="form-group">
+                <label for="birth_date">Дата рождения</label>
+                <input type="date" class="form-control" id="birth_date" name="birth_date" value="{{ doctor.birth_date.strftime('%Y-%m-%d') }}" required>
+            </div>
 
-                <div class="mb-3">
-                    <label for="birth_date" class="form-label">Дата рождения</label>
-                    <input type="date" class="form-control" id="birth_date" name="birth_date" required value="{{ doctor.birth_date }}">
-                </div>
+            <div class="form-group">
+                <label for="specialization">Специализация</label>
+                <input type="text" class="form-control" id="specialization" name="specialization" value="{{ doctor.specialization or '' }}">
+            </div>
 
-                <div class="mb-3">
-                    <label for="phone_number" class="form-label">Номер телефона</label>
-                    <input type="text" class="form-control" id="phone_number" name="phone_number" required value="{{ doctor.phone_number }}">
-                </div>
+            <div class="form-group">
+                <label for="phone_number">Номер телефона</label>
+                <input type="tel" class="form-control" id="phone_number" name="phone_number" value="{{ doctor.phone_number or '' }}" pattern="[0-9]{11}" placeholder="79991234567">
+                <small class="form-text text-muted">
+                    Введите 11 цифр без пробелов и других символов.
+                </small>
+            </div>
 
-                <div class="mb-3">
-                    <label for="department_id" class="form-label">Отделение</label>
-                    <select class="form-control" id="department_id" name="department_id" required>
-                        {% for department in departments %}
-                            <option value="{{ department.department_id }}" {% if department.department_id == doctor.department_id %}selected{% endif %}>{{ department.name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
+            <div class="form-group">
+                <label for="department_id">Отделение</label>
+                <select class="form-control" id="department_id" name="department_id">
+                    <option value="">Не назначено</option>
+                    {% for department in departments %}
+                        <option value="{{ department.department_id }}" {% if doctor.department_id and doctor.department_id == department.department_id %}selected{% endif %}>
+                            {{ department.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
 
-                <button type="submit" class="btn btn-primary w-100">Сохранить изменения</button>
-            </form>
-        </div>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Сохранить изменения
+            </button>
+        </form>
     </div>
 </div>
 

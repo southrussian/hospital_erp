@@ -438,3 +438,50 @@ AttributeError: 'NoneType' object has no attribute 'date'
 [2025-03-17 17:25:00,774] INFO - Приложение Flask запущено.
 [2025-03-17 17:33:21,037] INFO - Приложение Flask запущено.
 [2025-03-17 17:33:21,968] INFO - Приложение Flask запущено.
+[2025-03-19 16:41:05,027] INFO - Приложение Flask запущено.
+[2025-03-19 16:41:06,377] INFO - Приложение Flask запущено.
+[2025-03-19 16:41:12,141] INFO - Доступ к панели управления пользователем ID: 1.
+[2025-03-19 16:41:23,931] INFO - Доступ к панели управления пользователем ID: 1.
+[2025-03-19 16:41:26,881] INFO - Доступ к панели управления пользователем ID: 1.
+[2025-03-19 16:41:31,669] INFO - Доступ к панели управления пользователем ID: 1.
+[2025-03-19 16:41:38,201] INFO - Доступ к панели управления пользователем ID: 1.
+[2025-03-19 16:41:41,208] INFO - Доступ к панели управления пользователем ID: 1.
+[2025-03-19 16:41:45,086] INFO - Доступ к панели управления пользователем ID: 1.
+[2025-03-19 16:41:48,479] INFO - Доступ к панели управления пользователем ID: 1.
+[2025-03-19 16:41:56,869] INFO - Доступ к панели управления пользователем ID: 1.
+[2025-03-19 16:47:05,186] INFO - Приложение Flask запущено.
+[2025-03-19 16:47:17,720] INFO - Приложение Flask запущено.
+[2025-03-19 16:52:22,774] INFO - Приложение Flask запущено.
+[2025-03-19 16:52:23,403] INFO - Приложение Flask запущено.
+[2025-03-19 16:52:29,255] INFO - Доступ к панели управления пользователем ID: 1.
+[2025-03-19 16:58:54,503] INFO - Доступ к панели управления пользователем ID: 1.
+[2025-03-19 17:23:06,407] INFO - Доступ к панели управления пользователем ID: 1.
+[2025-03-19 17:38:54,338] INFO - Доступ к панели управления пользователем ID: 1.
+[2025-03-19 18:06:51,282] INFO - Приложение Flask запущено.
+[2025-03-19 18:08:58,211] INFO - Приложение Flask запущено.
+[2025-03-19 18:08:58,834] INFO - Приложение Flask запущено.
+[2025-03-19 18:10:51,999] INFO - Приложение Flask запущено.
+[2025-03-19 18:10:52,625] INFO - Приложение Flask запущено.
+[2025-03-19 18:12:58,905] INFO - Доступ к панели управления пользователем ID: 1.
+[2025-03-19 18:14:03,348] INFO - Доступ к панели управления пользователем ID: 1.
+[2025-03-19 18:14:38,230] INFO - Приложение Flask запущено.
+[2025-03-19 18:14:40,454] INFO - Приложение Flask запущено.
+[2025-03-19 18:14:41,028] INFO - Приложение Flask запущено.
+[2025-03-19 18:14:46,813] INFO - Received form data: ImmutableMultiDict([('first_name', 'Олег'), ('middle_name', 'Евгеньевич'), ('last_name', 'Перегородиев'), ('birth_date', '2001-03-14'), ('specialization', 'Хирургия'), ('phone_number', '89288218038'), ('department_id', '1')])
+[2025-03-19 18:14:46,813] WARNING - Missing or empty required field: user_id
+[2025-03-19 18:18:43,146] INFO - Received form data: ImmutableMultiDict([('user_id', '1'), ('first_name', 'Данил'), ('middle_name', 'Евгеньевич'), ('last_name', 'Перегородиев'), ('birth_date', '2001-03-14'), ('specialization', 'Хирургия'), ('phone_number', '89288218038'), ('department_id', '1')])
+[2025-03-19 18:18:43,163] WARNING - User already registered as doctor: 1
+[2025-03-19 18:19:03,758] INFO - Received form data: ImmutableMultiDict([('user_id', '1'), ('first_name', 'Олег'), ('middle_name', 'Евгеньевич'), ('last_name', 'Перегородиев'), ('birth_date', '2001-03-14'), ('specialization', 'Хирургия'), ('phone_number', '89288218038'), ('department_id', '1')])
+[2025-03-19 18:19:03,761] WARNING - User already registered as doctor: 1
+[2025-03-19 18:20:12,125] INFO - Received form data: ImmutableMultiDict([('user_id', '1'), ('first_name', 'Данил'), ('middle_name', 'Евгеньевич'), ('last_name', 'Перегородиев'), ('birth_date', '2001-03-14'), ('specialization', 'Хирургия'), ('phone_number', '89288218038'), ('department_id', '1')])
+[2025-03-19 18:20:12,130] WARNING - User already registered as doctor: 1
+[2025-03-19 18:38:17,074] INFO - Received form data: ImmutableMultiDict([('user_id', '1'), ('first_name', 'Данил'), ('middle_name', 'Евгеньевич'), ('last_name', 'Перегородиев'), ('birth_date', '2001-03-14'), ('specialization', 'Хирургия'), ('phone_number', '89288218038'), ('department_id', '1')])
+[2025-03-19 18:38:17,082] WARNING - User already registered as doctor: 1
+[2025-03-19 18:38:58,794] INFO - Приложение Flask запущено.
+[2025-03-19 18:39:13,533] INFO - Received form data: ImmutableMultiDict([('user_id', '1'), ('first_name', 'Данил'), ('middle_name', 'Евгеньевич'), ('last_name', 'Перегородиев'), ('birth_date', '2001-03-14'), ('specialization', 'Хирургия'), ('phone_number', '89288218038'), ('department_id', '1')])
+[2025-03-19 18:39:13,540] INFO - Doctor 1 updated successfully.
+[2025-03-19 18:39:19,633] INFO - Received form data: ImmutableMultiDict([('user_id', '1'), ('first_name', 'Олег'), ('middle_name', 'Евгеньевич'), ('last_name', 'Перегородиев'), ('birth_date', '2001-03-14'), ('specialization', 'Хирургия'), ('phone_number', '89288218038'), ('department_id', '1')])
+[2025-03-19 18:39:19,646] INFO - Doctor 1 updated successfully.
+[2025-03-19 18:39:30,449] INFO - Received form data: ImmutableMultiDict([('user_id', '1'), ('first_name', 'Олег'), ('middle_name', 'Евгеньевич'), ('last_name', 'Коваленко'), ('birth_date', '2001-03-14'), ('specialization', 'Хирургия'), ('phone_number', '89288218038'), ('department_id', '1')])
+[2025-03-19 18:39:30,454] INFO - Doctor 1 updated successfully.
+[2025-03-19 18:42:56,781] INFO - Приложение Flask запущено.

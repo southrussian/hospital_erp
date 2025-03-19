@@ -111,54 +111,55 @@ def setup_edit_doctor_routes(app):
         departments = Department.query.all()
 
         if request.method == 'POST':
-            # Обязательные поля
-            required_fields = ['user_id', 'first_name', 'last_name', 'birth_date']
-            for field in required_fields:
-                if field not in request.form or not request.form[field].strip():
-                    flash(f"Field {field.replace('_', ' ').title()} is required.", "danger")
+            try:
+                # Логируем входящие данные
+                app.logger.info(f"Received form data: {request.form}")
+
+                # Проверка обязательных полей
+                required_fields = ['first_name', 'last_name', 'birth_date']
+                for field in required_fields:
+                    if field not in request.form or not request.form[field].strip():
+                        flash(f"Поле {field.replace('_', ' ').title()} обязательно для заполнения.", "danger")
+                        app.logger.warning(f"Missing or empty required field: {field}")
+                        return redirect(url_for('edit_doctor', doctor_id=doctor_id))
+
+                # Обновление данных врача
+                doctor.first_name = request.form['first_name'].strip()
+                doctor.middle_name = request.form.get('middle_name', '').strip() or None
+                doctor.last_name = request.form['last_name'].strip()
+                doctor.specialization = request.form.get('specialization', '').strip() or None
+
+                # Валидация даты рождения
+                try:
+                    doctor.birth_date = datetime.strptime(request.form['birth_date'], '%Y-%m-%d').date()
+                except ValueError as e:
+                    flash("Неверный формат даты. Используйте YYYY-MM-DD.", "danger")
+                    app.logger.error(f"Invalid date format: {request.form['birth_date']}")
                     return redirect(url_for('edit_doctor', doctor_id=doctor_id))
 
-            user_id = request.form['user_id']
-            # Проверка пользователя
-            user = User.query.get(user_id)
-            if not user or user.role != 'doctor':
-                flash("Invalid user selected.", "danger")
-                return redirect(url_for('edit_doctor', doctor_id=doctor_id))
+                # Валидация номера телефона
+                phone_number = request.form.get('phone_number', '').strip()
+                if phone_number and len(phone_number) != 11:
+                    flash("Номер телефона должен состоять из 11 цифр.", "danger")
+                    app.logger.warning(f"Invalid phone number: {phone_number}")
+                    return redirect(url_for('edit_doctor', doctor_id=doctor_id))
+                doctor.phone_number = phone_number or None
 
-            # Проверка уникальности user_id (если изменили)
-            if user_id != doctor.user_id and Doctor.query.filter_by(user_id=user_id).first():
-                flash("This user is already registered as a doctor.", "danger")
-                return redirect(url_for('edit_doctor', doctor_id=doctor_id))
+                # Назначение отделения
+                department_id = request.form.get('department_id')
+                doctor.department_id = int(department_id) if department_id else None
 
-            # Обновление данных
-            doctor.user_id = user_id
-            doctor.first_name = request.form['first_name'].strip()
-            doctor.middle_name = request.form.get('middle_name', '').strip() or None
-            doctor.last_name = request.form['last_name'].strip()
-            doctor.specialization = request.form.get('specialization', '').strip() or None
-
-            try:
-                doctor.birth_date = datetime.strptime(request.form['birth_date'], '%Y-%m-%d').date()
-            except ValueError:
-                flash("Invalid date format. Use YYYY-MM-DD.", "danger")
-                return redirect(url_for('edit_doctor', doctor_id=doctor_id))
-
-            phone_number = request.form.get('phone_number', '').strip()
-            if phone_number and len(phone_number) != 11:
-                flash("Phone number must be 11 digits.", "danger")
-                return redirect(url_for('edit_doctor', doctor_id=doctor_id))
-            doctor.phone_number = phone_number or None
-
-            department_id = request.form.get('department_id')
-            doctor.department_id = int(department_id) if department_id else None
-
-            try:
+                # Сохранение изменений
                 db.session.commit()
-                flash("Doctor updated successfully!", "success")
+                flash("Данные врача успешно обновлены!", "success")
+                app.logger.info(f"Doctor {doctor_id} updated successfully.")
                 return redirect(url_for('view_doctors'))
+
             except Exception as e:
                 db.session.rollback()
-                flash(f"Error updating doctor: {str(e)}", "danger")
+                flash(f"Ошибка при обновлении данных врача: {str(e)}", "danger")
+                app.logger.error(f"Error updating doctor {doctor_id}: {str(e)}", exc_info=True)
+                return redirect(url_for('edit_doctor', doctor_id=doctor_id))
 
         return render_template('edit_doctor.html', doctor=doctor, users=users, departments=departments)
 

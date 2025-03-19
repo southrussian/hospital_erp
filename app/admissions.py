@@ -25,9 +25,15 @@ def setup_view_admissions_routes(app):
 def setup_add_admission_routes(app):
     @app.route('/add_admission', methods=['GET', 'POST'])
     def add_admission():
+        preset_patient_id = request.args.get('patient_id')
         if request.method == 'POST':
             try:
-                # Валидация обязательных полей
+                patient_id = request.form.get('patient_id') or preset_patient_id
+
+                if not patient_id:  # Добавленная проверка
+                    flash("Требуется указать пациента", "danger")
+                    return redirect(url_for('add_admission'))
+
                 required_fields = ['patient_id', 'admission_date', 'reason', 'admitted_by']
                 for field in required_fields:
                     if not request.form.get(field):
@@ -79,9 +85,17 @@ def setup_add_admission_routes(app):
 
         patients = Patient.query.order_by(Patient.last_name).all()
         doctors = User.query.filter(User.role.in_(['doctor', 'admin'])).all()
+
+        preset_patient = None
+        if preset_patient_id:
+            preset_patient = Patient.query.get(preset_patient_id)
+            if not preset_patient:
+                flash("Предустановленный пациент не найден", "warning")
+
         return render_template('add_admission.html',
                                patients=patients,
-                               doctors=doctors)
+                               doctors=doctors,
+                               preset_patient=preset_patient)
 
 
 def setup_edit_admission_routes(app):

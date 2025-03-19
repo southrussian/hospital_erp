@@ -81,7 +81,7 @@ def setup_add_patient_routes(app):
                 db.session.add(patient)
                 db.session.commit()
                 flash("Пациент успешно добавлен!", "success")
-                return redirect(url_for('view_patients'))
+                return redirect(url_for('add_admission', patient_id=patient.patient_id))
 
             except IntegrityError:
                 db.session.rollback()
