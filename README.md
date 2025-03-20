@@ -30,22 +30,25 @@ Hospital Management System — это веб-приложение на базе 
    
 2. **Создайте виртуальное окружение и активируйте его:**
 
-```bash
-python3 -m venv venv
-source venv/bin/activate  # На Windows используйте `venv\Scripts\activate`
-```
+    ```bash
+    python3 -m venv venv
+    source venv/bin/activate  # На Windows используйте `venv\Scripts\activate`
+    ```
 
 3. **Установите зависимости**
 
-```bash
-pip install -r requirements.txt
-```
+    ```bash
+    pip install -r requirements.txt
+    ```
+
 4. **Настройте базу данных:**
-Убедитесь, что у вас установлен PostgreSQL, и создайте базу данных с именем hospital. Обновите строку подключения к базе данных в app.py, если необходимо.
+Убедитесь, что у вас установлен PostgreSQL, и создайте базу данных с именем hospital. 
+Обновите строку подключения к базе данных в app.py, если необходимо.
 
 5. **Запустите приложение:**
-```bash
-python main.py
-```
+    ```bash
+    python main.py
+    ```
+   
 ## Вклад
 Если вы хотите внести свой вклад в проект, пожалуйста, создайте форк репозитория и отправьте pull request. Мы ценим ваши предложения и улучшения!
