@@ -177,8 +177,8 @@ class Prescription(db.Model):
     patient_id = db.Column(db.Integer, db.ForeignKey('patients.patient_id'), nullable=False)
     medicine_id = db.Column(db.Integer, db.ForeignKey('medicines.medicine_id'), nullable=False)
     doctor_id = db.Column(db.Integer, db.ForeignKey('doctors.doctor_id'), nullable=False)
-    dosage = db.Column(db.String(50), nullable=False)
-    frequency = db.Column(db.String(50))
+    dosage = db.Column(db.Integer, nullable=False)
+    frequency = db.Column(db.Integer)
     start_date = db.Column(db.DateTime, default=datetime.now())
     end_date = db.Column(db.DateTime)
     status = db.Column(db.String(20), default='active')  # active, completed, cancelled

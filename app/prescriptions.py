@@ -26,8 +26,8 @@ def setup_add_prescription_routes(app):
             patient_id = request.form.get('patient_id', '').strip()
             medicine_id = request.form.get('medicine_id', '').strip()
             doctor_id = request.form.get('doctor_id', '').strip()
-            dosage = request.form.get('dosage', '').strip()
-            frequency = request.form.get('frequency', '').strip()
+            dosage = int(request.form['dosage'])
+            frequency = int(request.form['frequency'])
             start_date_str = request.form.get('start_date', '').strip()
             end_date_str = request.form.get('end_date', '').strip()
             status = request.form.get('status', 'active').strip()
@@ -90,10 +90,8 @@ def setup_add_prescription_routes(app):
             if status not in valid_statuses:
                 errors.append("Неверный статус рецепта")
 
-            dosage_int = int(dosage)
-
             try:
-                if dosage_int <= 0:
+                if dosage <= 0:
                     errors.append("Дозировка должна быть положительным числом")
             except ValueError:
                 errors.append("Некорректное значение дозировки")
@@ -104,18 +102,16 @@ def setup_add_prescription_routes(app):
                 return render_template('add_prescription.html',
                                        patients=patients,
                                        doctors=doctors,
-                                       medicines=medicines,
-                                       form_data=request.form)
+                                       medicines=medicines)
 
             try:
                 inventory = MedicineInventory.query.filter_by(medicine_id=medicine_id).first()
-                if not inventory or inventory.quantity < dosage_int:
+                if not inventory or inventory.quantity < dosage * frequency:
                     flash('Недостаточно лекарств на складе!', 'danger')
                     return render_template('add_prescription.html',
                                            patients=patients,
                                            doctors=doctors,
-                                           medicines=medicines,
-                                           form_data=request.form)
+                                           medicines=medicines)
 
                 # Создание рецепта
                 prescription = Prescription(
@@ -131,7 +127,7 @@ def setup_add_prescription_routes(app):
                 )
 
                 # Обновление инвентаря
-                inventory.quantity -= dosage_int
+                inventory.quantity -= dosage * frequency
                 inventory.last_updated = datetime.now()
 
                 db.session.add(prescription)
@@ -164,8 +160,8 @@ def setup_edit_prescription_routes(app):
         if request.method == 'POST':
             # Получение данных
             medicine_id = request.form.get('medicine_id', '').strip()
-            dosage = request.form.get('dosage', '').strip()
-            frequency = request.form.get('frequency', '').strip()
+            dosage = int(request.form['dosage'])
+            frequency = int(request.form['frequency'])
             end_date_str = request.form.get('end_date', '').strip()
             status = request.form.get('status', '').strip()
             instructions = request.form.get('instructions', '').strip()
@@ -174,10 +170,8 @@ def setup_edit_prescription_routes(app):
             original_medicine_id = prescription.medicine_id
             original_dosage = prescription.dosage
 
-            dosage_int = int(dosage)
-
             try:
-                if dosage_int <= 0:
+                if dosage <= 0:
                     errors.append("Дозировка должна быть положительным числом")
             except ValueError:
                 errors.append("Некорректное значение дозировки")
@@ -204,12 +198,11 @@ def setup_edit_prescription_routes(app):
                                        prescription=prescription,
                                        patients=patients,
                                        doctors=doctors,
-                                       medicines=medicines,
-                                       form_data=request.form)
+                                       medicines=medicines)
 
             try:
                 # Обновление инвентаря при изменении лекарства или дозировки
-                if medicine_id != str(original_medicine_id) or dosage_int != original_dosage:
+                if medicine_id != str(original_medicine_id) or dosage != original_dosage:
                     # Возврат предыдущего количества
                     old_inventory = MedicineInventory.query.filter_by(medicine_id=original_medicine_id).first()
                     if old_inventory:
@@ -218,20 +211,19 @@ def setup_edit_prescription_routes(app):
 
                     # Проверка нового количества
                     new_inventory = MedicineInventory.query.filter_by(medicine_id=medicine_id).first()
-                    if not new_inventory or new_inventory.quantity < dosage_int:
+                    if not new_inventory or new_inventory.quantity < dosage * frequency:
                         flash('Недостаточно лекарств на складе!', 'danger')
                         return render_template('edit_prescription.html',
                                                prescription=prescription,
                                                patients=patients,
                                                doctors=doctors,
-                                               medicines=medicines,
-                                               form_data=request.form)
+                                               medicines=medicines)
 
-                    new_inventory.quantity -= dosage_int
+                    new_inventory.quantity -= dosage * frequency
                     new_inventory.last_updated = datetime.now()
 
                 prescription.medicine_id = medicine_id
-                prescription.dosage = dosage_int
+                prescription.dosage = dosage
                 prescription.frequency = frequency or None
                 prescription.end_date = end_date
                 prescription.status = status
@@ -266,7 +258,7 @@ def setup_delete_prescription_routes(app):
             if prescription.status == 'active':
                 inventory = MedicineInventory.query.filter_by(medicine_id=prescription.medicine_id).first()
                 if inventory:
-                    inventory.quantity += prescription.dosage
+                    inventory.quantity += prescription.dosage * prescription.frequency
                     inventory.last_updated = datetime.now()
 
             db.session.delete(prescription)
