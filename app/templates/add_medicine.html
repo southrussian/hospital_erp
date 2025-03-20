@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Добавить лекарство</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0-alpha1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             background-color: #f7f7f7;
@@ -13,87 +14,69 @@
         }
         .container {
             margin-top: 50px;
-            max-width: 600px;
-        }
-        .form-control {
-            border-radius: 15px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            background-color: #fff;
-        }
-        .btn {
-            border-radius: 15px;
-            padding: 12px 25px;
-            background-color: #007aff;
-            border: none;
-            color: #fff;
-            font-weight: bold;
-        }
-        .btn:hover {
-            background-color: #0061d5;
-        }
-        .alert {
-            border-radius: 10px;
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
+            max-width: 800px;
         }
         .card {
-            background-color: #ffffff;
-            border-radius: 20px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
         }
-        .card-header {
-            background-color: #f0f0f5;
-            border-radius: 15px 15px 0 0;
-            font-size: 1.5rem;
-            color: #333;
-            font-weight: bold;
+        .form-control {
+            border-radius: 8px;
+            padding: 10px;
+        }
+        .btn {
+            border-radius: 8px;
+            padding: 10px 20px;
+        }
+        .btn-primary {
+            background-color: #007aff;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #0061d5;
+        }
+        .btn-outline-primary {
+            border-color: #007aff;
+            color: #007aff;
+        }
+        .btn-outline-primary:hover {
+            background-color: #007aff;
+            color: #fff;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="card">
-        <div class="card-header">
-            Добавить лекарство
-        </div>
-        <div class="card-body">
-            <!-- Выводим сообщения об успехе или ошибке -->
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    <ul class="list-unstyled">
-                        {% for category, message in messages %}
-                            <li class="alert alert-{{ category }}">
-                                {{ message }}
-                            </li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-            {% endwith %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">Добавить лекарство</h1>
+        <a href="{{ url_for('view_medicine') }}" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left"></i> Назад
+        </a>
+    </div>
 
-            <form method="POST">
-                <div class="mb-3">
-                    <label for="name" class="form-label">Название</label>
-                    <input type="text" class="form-control" id="name" name="name" required>
-                </div>
-
-                <div class="mb-3">
-                    <label for="description" class="form-label">Описание</label>
-                    <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
-                </div>
-
-                <div class="mb-3">
-                    <label for="dosage_form" class="form-label">Форма дозировки</label>
-                    <input type="text" class="form-control" id="dosage_form" name="dosage_form" required>
-                </div>
-
-                <button type="submit" class="btn btn-primary w-100">Добавить лекарство</button>
-            </form>
-        </div>
+    <div class="card p-4">
+        <form method="POST">
+            <div class="mb-3">
+                <label for="name" class="form-label">Название</label>
+                <input type="text" class="form-control" id="name" name="name" value="{{ name }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Описание</label>
+                <textarea class="form-control" id="description" name="description">{{ description }}</textarea>
+            </div>
+            <div class="mb-3">
+                <label for="dosage_form" class="form-label">Форма дозировки</label>
+                <input type="text" class="form-control" id="dosage_form" name="dosage_form" value="{{ dosage_form }}">
+            </div>
+            <div class="mb-3">
+                <label for="atc_code" class="form-label">Код ATC</label>
+                <input type="text" class="form-control" id="atc_code" name="atc_code" maxlength="10" value="{{ atc_code }}">
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Сохранить
+            </button>
+        </form>
     </div>
 </div>
 
