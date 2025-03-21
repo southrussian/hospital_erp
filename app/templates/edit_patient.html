@@ -76,8 +76,8 @@
             <div class="mb-3">
                 <label for="gender" class="form-label">Пол</label>
                 <select class="form-select" id="gender" name="gender" required>
-                    <option value="Мужской" {% if patient.gender == 'Мужской' %}selected{% endif %}>Мужской</option>
-                    <option value="Женский" {% if patient.gender == 'Женский' %}selected{% endif %}>Женский</option>
+                    <option value="М" {% if patient.gender == 'М' %}selected{% endif %}>М</option>
+                    <option value="Ж" {% if patient.gender == 'Ж' %}selected{% endif %}>Ж</option>
                 </select>
             </div>
             <div class="mb-3">

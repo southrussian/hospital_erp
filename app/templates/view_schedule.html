@@ -85,6 +85,20 @@
             border-radius: 8px;
             padding: 8px 12px;
         }
+        .edit-btn {
+            margin-top: 5px;
+            display: block;
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            padding: 2px 5px;
+            font-size: 0.75rem;
+            color: white;
+            text-decoration: none;
+        }
+        .edit-btn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
     </style>
 </head>
 <body>
@@ -149,6 +163,9 @@
                                 <div class="event" style="top: {{ (start_time - hour * 60) * 0.5 }}px; height: {{ (end_time - start_time) * 0.5 }}px;">
                                     {{ schedule.doctor.first_name }} {{ schedule.doctor.last_name }}<br>
                                     {{ schedule.start_time.strftime('%H:%M') }} - {{ schedule.end_time.strftime('%H:%M') }}
+                                    <a href="{{ url_for('edit_schedule', schedule_id=schedule.schedule_id) }}" class="edit-btn">
+                                        <i class="fas fa-edit"></i> Редактировать
+                                    </a>
                                 </div>
                             {% endif %}
                         {% endif %}

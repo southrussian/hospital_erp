@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Добавить расписание</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0-alpha1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             background-color: #f7f7f7;
@@ -13,106 +14,88 @@
         }
         .container {
             margin-top: 50px;
-            max-width: 600px;
+            max-width: 800px;
         }
-        .form-control {
-            border-radius: 15px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            background-color: #fff;
+        .form-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+            padding: 2rem;
+        }
+        .form-label {
+            font-weight: 500;
         }
         .btn {
-            border-radius: 15px;
-            padding: 12px 25px;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 0.875rem;
+        }
+        .btn-primary {
             background-color: #007aff;
             border: none;
-            color: #fff;
-            font-weight: bold;
         }
-        .btn:hover {
+        .btn-primary:hover {
             background-color: #0061d5;
         }
-        .alert {
-            border-radius: 10px;
+        .btn-outline-primary {
+            border-color: #007aff;
+            color: #007aff;
         }
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
+        .btn-outline-primary:hover {
+            background-color: #007aff;
+            color: #fff;
         }
-        .card {
-            background-color: #ffffff;
-            border-radius: 20px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-        }
-        .card-header {
-            background-color: #f0f0f5;
-            border-radius: 15px 15px 0 0;
-            font-size: 1.5rem;
-            color: #333;
-            font-weight: bold;
+        .form-select {
+            border-radius: 8px;
+            padding: 8px 12px;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="card">
-        <div class="card-header">
-            Добавить расписание
-        </div>
-        <div class="card-body">
-            <!-- Выводим сообщения об успехе или ошибке -->
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    <ul class="list-unstyled">
-                        {% for category, message in messages %}
-                            <li class="alert alert-{{ category }}">
-                                {{ message }}
-                            </li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-            {% endwith %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">Добавить расписание</h1>
+        <a href="{{ url_for('view_schedule') }}" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left"></i> Назад
+        </a>
+    </div>
 
-            <form method="POST">
-                <div class="mb-3">
-                    <label for="doctor_id" class="form-label">Врач</label>
-                    <select class="form-control" id="doctor_id" name="doctor_id" required>
-                        <option value="" disabled selected>Выберите врача</option>
-                        {% for doctor in doctors %}
-                            <option value="{{ doctor.doctor_id }}">{{ doctor.first_name }} {{ doctor.last_name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div class="mb-3">
-                    <label for="day_of_week" class="form-label">День недели</label>
-                    <select class="form-control" id="day_of_week" name="day_of_week" required>
-                        <option value="" disabled selected>Выберите день недели</option>
-                        <option value="Понедельник">Понедельник</option>
-                        <option value="Вторник">Вторник</option>
-                        <option value="Среда">Среда</option>
-                        <option value="Четверг">Четверг</option>
-                        <option value="Пятница">Пятница</option>
-                        <option value="Суббота">Суббота</option>
-                        <option value="Воскресенье">Воскресенье</option>
-                    </select>
-                </div>
-
-                <div class="mb-3">
-                    <label for="start_time" class="form-label">Начало</label>
-                    <input type="time" class="form-control" id="start_time" name="start_time" required>
-                </div>
-
-                <div class="mb-3">
-                    <label for="end_time" class="form-label">Конец</label>
-                    <input type="time" class="form-control" id="end_time" name="end_time" required>
-                </div>
-
-                <button type="submit" class="btn btn-primary w-100">Добавить расписание</button>
-            </form>
-        </div>
+    <div class="form-container">
+        <form method="POST">
+            <div class="mb-3">
+                <label for="doctor_id" class="form-label">Врач</label>
+                <select class="form-select" id="doctor_id" name="doctor_id" required>
+                    <option value="">Выберите врача</option>
+                    {% for doctor in doctors %}
+                        <option value="{{ doctor.doctor_id }}">{{ doctor.first_name }} {{ doctor.last_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="day_of_week" class="form-label">День недели</label>
+                <select class="form-select" id="day_of_week" name="day_of_week" required>
+                    <option value="1">Понедельник</option>
+                    <option value="2">Вторник</option>
+                    <option value="3">Среда</option>
+                    <option value="4">Четверг</option>
+                    <option value="5">Пятница</option>
+                    <option value="6">Суббота</option>
+                    <option value="7">Воскресенье</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="start_time" class="form-label">Время начала</label>
+                <input type="time" class="form-control" id="start_time" name="start_time" required>
+            </div>
+            <div class="mb-3">
+                <label for="end_time" class="form-label">Время окончания</label>
+                <input type="time" class="form-control" id="end_time" name="end_time" required>
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Сохранить
+            </button>
+        </form>
     </div>
 </div>
 
