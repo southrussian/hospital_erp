@@ -22,6 +22,8 @@ def setup_add_prescription_routes(app):
         doctors = Doctor.query.all()
         medicines = Medicine.query.all()
 
+        time_delta = 0
+
         if request.method == 'POST':
             patient_id = request.form.get('patient_id', '').strip()
             medicine_id = request.form.get('medicine_id', '').strip()
@@ -83,8 +85,16 @@ def setup_add_prescription_routes(app):
                     end_date = datetime.strptime(end_date_str, '%Y-%m-%dT%H:%M')
                     if end_date <= start_date:
                         errors.append("Дата окончания должна быть позже даты начала")
+                    else:
+                        # Вычисляем разницу в днях
+                        time_delta = (end_date - start_date).days
+                        if time_delta <= 0:
+                            errors.append("Разница между датами должна быть положительной")
                 except ValueError:
                     errors.append("Неверный формат даты окончания")
+            else:
+                end_date = None
+                time_delta = 1  # Если end_date не указан, разница равна 0
 
             valid_statuses = ['active', 'completed', 'cancelled']
             if status not in valid_statuses:
@@ -106,7 +116,7 @@ def setup_add_prescription_routes(app):
 
             try:
                 inventory = MedicineInventory.query.filter_by(medicine_id=medicine_id).first()
-                if not inventory or inventory.quantity < dosage * frequency:
+                if not inventory or inventory.quantity < dosage * frequency * time_delta:
                     flash('Недостаточно лекарств на складе!', 'danger')
                     return render_template('add_prescription.html',
                                            patients=patients,
@@ -157,12 +167,15 @@ def setup_edit_prescription_routes(app):
         doctors = Doctor.query.all()
         medicines = Medicine.query.all()
 
+        time_delta = 0
+
         if request.method == 'POST':
             # Получение данных
             medicine_id = request.form.get('medicine_id', '').strip()
             dosage = int(request.form['dosage'])
             frequency = int(request.form['frequency'])
             end_date_str = request.form.get('end_date', '').strip()
+            start_date_str = request.form.get('start_date', '').strip()
             status = request.form.get('status', '').strip()
             instructions = request.form.get('instructions', '').strip()
 
@@ -176,15 +189,34 @@ def setup_edit_prescription_routes(app):
             except ValueError:
                 errors.append("Некорректное значение дозировки")
 
-            # Валидация даты окончания
+                # Валидация даты окончания
             end_date = prescription.end_date
             if end_date_str:
                 try:
                     end_date = datetime.strptime(end_date_str, '%Y-%m-%dT%H:%M')
                     if end_date <= prescription.start_date:
                         errors.append("Дата окончания должна быть позже даты начала")
-                except ValueError:
+                    else:
+                        # Вычисляем разницу в днях
+                        time_delta = (end_date - prescription.start_date).days
+                        if time_delta <= 0:
+                            errors.append("Разница между датами должна быть положительной")
+                except ValueError as e:
+                    print(e)
                     errors.append("Неверный формат даты окончания")
+            else:
+                end_date = None
+                time_delta = 1  # Если end_date не указан, разница равна 0
+
+            if start_date_str:
+                try:
+                    start_date = datetime.strptime(start_date_str, '%Y-%m-%dT%H:%M')
+                    prescription.start_date = start_date
+                except ValueError as e:
+                    print(e)
+                    errors.append("Неверный формат даты окончания")
+            else:
+                time_delta = 0  # Если end_date не указан, разница равна 0
 
             # Валидация статуса
             valid_statuses = ['active', 'completed', 'cancelled']
@@ -211,7 +243,7 @@ def setup_edit_prescription_routes(app):
 
                     # Проверка нового количества
                     new_inventory = MedicineInventory.query.filter_by(medicine_id=medicine_id).first()
-                    if not new_inventory or new_inventory.quantity < dosage * frequency:
+                    if not new_inventory or new_inventory.quantity < dosage * frequency * time_delta:
                         flash('Недостаточно лекарств на складе!', 'danger')
                         return render_template('edit_prescription.html',
                                                prescription=prescription,
@@ -219,7 +251,7 @@ def setup_edit_prescription_routes(app):
                                                doctors=doctors,
                                                medicines=medicines)
 
-                    new_inventory.quantity -= dosage * frequency
+                    new_inventory.quantity -= dosage * frequency * time_delta
                     new_inventory.last_updated = datetime.now()
 
                 prescription.medicine_id = medicine_id
