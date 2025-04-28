@@ -5,7 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Панель управления</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <style>
+        :root {
+            --primary: #007aff;
+            --secondary: #5ac8fa;
+            --success: #34c759;
+            --danger: #ff3b30;
+            --light: #f8f9fa;
+            --dark: #1c1c1e;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, "San Francisco", Arial, sans-serif;
             background-color: #f9f9f9;
@@ -15,7 +25,7 @@
         }
         .container {
             max-width: 1200px;
-            margin: 80px auto;
+            margin: 40px auto;
             padding: 0 15px;
         }
         .dashboard-card {
@@ -24,6 +34,7 @@
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
             overflow: hidden;
             transition: box-shadow 0.3s ease;
+            margin-bottom: 30px;
         }
         .dashboard-card:hover {
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
@@ -39,6 +50,43 @@
             margin: 0;
             font-weight: 600;
         }
+        .stats-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 30px;
+            justify-content: space-between;
+        }
+        .stat-card {
+            flex: 1 1 calc(25% - 20px);
+            min-width: 200px;
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+        .stat-label {
+            font-size: 1rem;
+            color: #666;
+        }
         .card-body {
             padding: 40px;
             display: flex;
@@ -51,31 +99,45 @@
             border: 1px solid #e0e0e0;
             border-radius: 15px;
             box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
-            color: #007aff;
+            color: var(--primary);
             text-decoration: none;
             padding: 20px;
             font-size: 18px;
             font-weight: 500;
             text-align: center;
             transition: all 0.3s ease;
-            flex: 1 1 calc(33.333% - 40px); /* Three buttons per row */
+            flex: 1 1 calc(33.333% - 40px);
             max-width: calc(33.333% - 40px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .dashboard-button i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--primary);
         }
         .dashboard-button:hover {
             background-color: #f7f7f9;
-            transform: translateY(-2px);
+            transform: translateY(-5px);
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            color: var(--primary);
         }
         .logout-link {
             display: block;
-            margin-top: 30px;
+            margin: 30px auto;
             text-align: center;
             color: #888;
             text-decoration: none;
             font-size: 16px;
+            width: fit-content;
+            padding: 8px 20px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
         }
         .logout-link:hover {
-            color: #007aff;
+            color: var(--primary);
+            background-color: rgba(0, 122, 255, 0.1);
         }
     </style>
 </head>
@@ -86,21 +148,97 @@
         <div class="dashboard-header">
             <h2>Дашборд травматологического отделения</h2>
         </div>
-        <div class="card-body">
-            <a href="{{ url_for('view_doctors') }}" class="dashboard-button">Врачи</a>
-            <a href="{{ url_for('view_patients') }}" class="dashboard-button">Пациенты</a>
-            <a href="{{ url_for('view_rooms') }}" class="dashboard-button">Палаты</a>
-            <a href="{{ url_for('view_schedule') }}" class="dashboard-button">Расписания</a>
-            <a href="{{ url_for('view_medicine')}}" class="dashboard-button">Медикаменты</a>
-            <a href="{{ url_for('view_medicine_inventory')}}" class="dashboard-button">Инвентарь медикаментов</a>
-            <a href="{{ url_for('view_beds') }}" class="dashboard-button">Койки</a>
-            <a href="{{ url_for('view_operations')}}" class="dashboard-button">Операции</a>
-            <a href="{{ url_for('view_prescriptions')}}" class="dashboard-button">Рецепты</a>
-            <a href="{{ url_for('view_medical_records')}}" class="dashboard-button">Записи осмотров</a>
-            <a href="{{ url_for('view_admissions')}}" class="dashboard-button">Поступления</a>
-            <a href="{{ url_for('analyze_admissions')}}" class="dashboard-button">Аналитика поступлений</a>
+
+        <!-- Карточки статистики -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-procedures"></i>
+                </div>
+                <div class="stat-value">124</div>
+                <div class="stat-label">Пациентов сегодня</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-user-md"></i>
+                </div>
+                <div class="stat-value">18</div>
+                <div class="stat-label">Врачей в смене</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-bed"></i>
+                </div>
+                <div class="stat-value">56</div>
+                <div class="stat-label">Свободных коек</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-ambulance"></i>
+                </div>
+                <div class="stat-value">7</div>
+                <div class="stat-label">Срочных поступлений</div>
+            </div>
         </div>
-        <a href="{{ url_for('logout') }}" class="logout-link">Выйти</a>
+    </div>
+
+    <div class="dashboard-card">
+        <div class="card-body">
+            <a href="{{ url_for('view_doctors') }}" class="dashboard-button">
+                <i class="fas fa-user-md"></i>
+                Врачи
+            </a>
+            <a href="{{ url_for('view_patients') }}" class="dashboard-button">
+                <i class="fas fa-procedures"></i>
+                Пациенты
+            </a>
+            <a href="{{ url_for('view_rooms') }}" class="dashboard-button">
+                <i class="fas fa-door-open"></i>
+                Палаты
+            </a>
+            <a href="{{ url_for('view_schedule') }}" class="dashboard-button">
+                <i class="fas fa-calendar-alt"></i>
+                Расписания
+            </a>
+            <a href="{{ url_for('view_medicine')}}" class="dashboard-button">
+                <i class="fas fa-pills"></i>
+                Медикаменты
+            </a>
+            <a href="{{ url_for('view_medicine_inventory')}}" class="dashboard-button">
+                <i class="fas fa-warehouse"></i>
+                Инвентарь
+            </a>
+            <a href="{{ url_for('view_beds') }}" class="dashboard-button">
+                <i class="fas fa-bed"></i>
+                Койки
+            </a>
+            <a href="{{ url_for('view_operations')}}" class="dashboard-button">
+                <i class="fas fa-syringe"></i>
+                Операции
+            </a>
+            <a href="{{ url_for('view_prescriptions')}}" class="dashboard-button">
+                <i class="fas fa-file-prescription"></i>
+                Рецепты
+            </a>
+            <a href="{{ url_for('view_medical_records')}}" class="dashboard-button">
+                <i class="fas fa-file-medical"></i>
+                Записи осмотров
+            </a>
+            <a href="{{ url_for('view_admissions')}}" class="dashboard-button">
+                <i class="fas fa-ambulance"></i>
+                Поступления
+            </a>
+            <a href="{{ url_for('analyze_admissions')}}" class="dashboard-button">
+                <i class="fas fa-chart-line"></i>
+                Аналитика
+            </a>
+        </div>
+        <a href="{{ url_for('logout') }}" class="logout-link">
+            <i class="fas fa-sign-out-alt"></i> Выйти
+        </a>
     </div>
 </div>
 
