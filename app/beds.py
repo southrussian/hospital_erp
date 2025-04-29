@@ -3,7 +3,7 @@ from sqlalchemy.exc import IntegrityError
 from models import *
 
 
-def setup_view_beds_routes(app):
+def setup_beds_routes(app):
     @app.route('/view_beds')
     def view_beds():
         try:
@@ -18,8 +18,6 @@ def setup_view_beds_routes(app):
             flash(f"Ошибка при загрузке данных: {str(e)}", "danger")
             return redirect(url_for('index'))
 
-
-def setup_add_bed_routes(app):
     @app.route('/add_bed', methods=['GET', 'POST'])
     def add_bed():
         rooms = Room.query.all()
@@ -67,8 +65,6 @@ def setup_add_bed_routes(app):
 
         return render_template('add_bed.html', rooms=rooms, patients=patients)
 
-
-def setup_edit_bed_routes(app):
     @app.route('/edit_bed/<int:bed_id>', methods=['GET', 'POST'])
     def edit_bed(bed_id):
         bed = Bed.query.get_or_404(bed_id)
@@ -119,8 +115,6 @@ def setup_edit_bed_routes(app):
                                patients=patients,
                                bed=bed)
 
-
-def setup_delete_bed_routes(app):
     @app.route('/delete_bed/<int:bed_id>', methods=['POST'])
     def delete_bed(bed_id):
         bed = Bed.query.get_or_404(bed_id)

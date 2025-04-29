@@ -4,7 +4,7 @@ from sqlalchemy.orm import joinedload
 from models import *
 
 
-def setup_view_medical_records_routes(app):
+def setup_medical_records_routes(app):
     @app.route('/medical_records')
     def view_medical_records():
         try:
@@ -19,8 +19,6 @@ def setup_view_medical_records_routes(app):
             flash("Ошибка загрузки данных", "danger")
             return redirect(url_for('dashboard'))
 
-
-def setup_add_medical_record_routes(app):
     @app.route('/medical_records/add', methods=['GET', 'POST'])
     def add_medical_record():
         if request.method == 'POST':
@@ -66,8 +64,6 @@ def setup_add_medical_record_routes(app):
                                doctors=doctors,
                                record_types=record_types)
 
-
-def setup_edit_medical_record_routes(app):
     @app.route('/medical_records/edit/<int:record_id>', methods=['GET', 'POST'])
     def edit_medical_record(record_id):
         record = MedicalRecord.query.options(
@@ -111,8 +107,6 @@ def setup_edit_medical_record_routes(app):
                                admissions=admissions,
                                record_types=record_types)
 
-
-def setup_delete_medical_record_routes(app):
     @app.route('/medical_records/delete/<int:record_id>', methods=['POST'])
     def delete_medical_record(record_id):
         record = MedicalRecord.query.get_or_404(record_id)

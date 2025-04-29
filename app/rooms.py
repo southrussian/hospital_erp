@@ -6,7 +6,7 @@ from models import *
 ROOM_TYPES = ['общая', 'индивидуальная', 'полулюкс', 'послеоперационная', 'изолятор']
 
 
-def setup_view_rooms_routes(app):
+def setup_rooms_routes(app):
     @app.route('/view_rooms')
     def view_rooms():
         try:
@@ -33,8 +33,6 @@ def setup_view_rooms_routes(app):
             flash(f"Ошибка при загрузке данных: {str(e)}", "danger")
             return redirect(url_for('view_rooms'))
 
-
-def setup_add_room_routes(app):
     @app.route('/add_room', methods=['GET', 'POST'])
     def add_room():
         departments = Department.query.all()
@@ -88,8 +86,6 @@ def setup_add_room_routes(app):
 
         return render_template('add_room.html', departments=departments, ROOM_TYPES=ROOM_TYPES)
 
-
-def setup_edit_room_routes(app):
     @app.route('/edit_room/<int:room_id>', methods=['GET', 'POST'])
     def edit_room(room_id):
         room = Room.query.get_or_404(room_id)
@@ -132,8 +128,6 @@ def setup_edit_room_routes(app):
                                departments=departments,
                                ROOM_TYPES=ROOM_TYPES)
 
-
-def setup_delete_room_routes(app):
     @app.route('/delete_room/<int:room_id>', methods=['POST'])
     def delete_room(room_id):
         room = Room.query.get_or_404(room_id)

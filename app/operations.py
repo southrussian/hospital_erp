@@ -4,7 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from datetime import datetime
 
 
-def setup_view_operations_routes(app):
+def setup_operations_routes(app):
     @app.route('/view_operations')
     def view_operations():
         operations = Operation.query.options(
@@ -13,8 +13,6 @@ def setup_view_operations_routes(app):
         ).all()
         return render_template('view_operations.html', operations=operations)
 
-
-def setup_add_operation_routes(app):
     @app.route('/add_operation', methods=['GET', 'POST'])
     def add_operation():
         patients = Patient.query.all()
@@ -110,8 +108,6 @@ def setup_add_operation_routes(app):
                                patients=patients,
                                doctors=doctors)
 
-
-def setup_edit_operation_routes(app):
     @app.route('/edit_operation/<int:operation_id>', methods=['GET', 'POST'])
     def edit_operation(operation_id):
         operation = Operation.query.get_or_404(operation_id)
@@ -208,8 +204,6 @@ def setup_edit_operation_routes(app):
                                patients=patients,
                                doctors=doctors)
 
-
-def setup_delete_operation_routes(app):
     @app.route('/delete_operation/<int:operation_id>', methods=['POST'])
     def delete_operation(operation_id):
         try:

@@ -3,7 +3,7 @@ from models import *
 from sqlalchemy.exc import IntegrityError
 
 
-def setup_view_medicine_routes(app):
+def setup_medicine_routes(app):
     @app.route('/view_medicine')
     def view_medicine():
         try:
@@ -12,8 +12,6 @@ def setup_view_medicine_routes(app):
         except Exception as e:
             app.logger.error(e)
 
-
-def setup_add_medicine_routes(app):
     @app.route('/add_medicine', methods=['GET', 'POST'])
     def add_medicine():
         if request.method == 'POST':
@@ -62,8 +60,6 @@ def setup_add_medicine_routes(app):
 
         return render_template('add_medicine.html')
 
-
-def setup_edit_medicine_routes(app):
     @app.route('/edit_medicine/<int:medicine_id>', methods=['GET', 'POST'])
     def edit_medicine(medicine_id):
         medicine = Medicine.query.get_or_404(medicine_id)
@@ -115,8 +111,6 @@ def setup_edit_medicine_routes(app):
 
         return render_template('edit_medicine.html', medicine=medicine)
 
-
-def setup_delete_medicine_routes(app):
     @app.route('/delete_medicine/<int:medicine_id>', methods=['POST'])
     def delete_medicine(medicine_id):
         try:

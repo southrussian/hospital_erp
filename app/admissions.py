@@ -6,7 +6,7 @@ import plotly.express as px
 from models import *
 
 
-def setup_view_admissions_routes(app):
+def setup_admissions_routes(app):
     @app.route('/view_admissions')
     def view_admissions():
         try:
@@ -21,8 +21,6 @@ def setup_view_admissions_routes(app):
             app.logger.error(e)
             return redirect(url_for('dashboard'))
 
-
-def setup_add_admission_routes(app):
     @app.route('/add_admission', methods=['GET', 'POST'])
     def add_admission():
         preset_patient_id = request.args.get('patient_id')
@@ -97,8 +95,6 @@ def setup_add_admission_routes(app):
                                doctors=doctors,
                                preset_patient=preset_patient)
 
-
-def setup_edit_admission_routes(app):
     @app.route('/edit_admission/<int:admission_id>', methods=['GET', 'POST'])
     def edit_admission(admission_id):
         admission = Admission.query.options(
@@ -143,8 +139,6 @@ def setup_edit_admission_routes(app):
                                patients=patients,
                                doctors=doctors)
 
-
-def setup_delete_admission_routes(app):
     @app.route('/delete_admission/<int:admission_id>', methods=['POST'])
     def delete_admission(admission_id):
         admission = Admission.query.get_or_404(admission_id)
@@ -167,8 +161,6 @@ def setup_delete_admission_routes(app):
 
         return redirect(url_for('view_admissions'))
 
-
-def setup_analyze_admissions_routes(app):
     @app.route('/analyze_admissions')
     def analyze_admissions():
         try:

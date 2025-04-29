@@ -4,7 +4,7 @@ from models import *
 from datetime import datetime
 
 
-def setup_view_doctors_routes(app):
+def setup_doctors_routes(app):
     @app.route('/view_doctors')
     def view_doctors():
         sort_order = request.args.get('sort', 'asc')  # По умолчанию сортировка по возрастанию
@@ -27,8 +27,6 @@ def setup_view_doctors_routes(app):
         return render_template('view_doctors.html', doctors=doctors,
                                search_query=search_query, sort_order=sort_order)
 
-
-def setup_add_doctor_routes(app):
     @app.route('/add_doctor', methods=['GET', 'POST'])
     def add_doctor():
         users = User.query.filter_by(role='doctor').all()
@@ -102,8 +100,6 @@ def setup_add_doctor_routes(app):
 
         return render_template('add_doctor.html', users=users, departments=departments)
 
-
-def setup_edit_doctor_routes(app):
     @app.route('/edit_doctor/<int:doctor_id>', methods=['GET', 'POST'])
     def edit_doctor(doctor_id):
         doctor = Doctor.query.get_or_404(doctor_id)
@@ -112,7 +108,6 @@ def setup_edit_doctor_routes(app):
 
         if request.method == 'POST':
             try:
-                # Логируем входящие данные
                 app.logger.info(f"Received form data: {request.form}")
 
                 # Проверка обязательных полей
@@ -134,7 +129,7 @@ def setup_edit_doctor_routes(app):
                     doctor.birth_date = datetime.strptime(request.form['birth_date'], '%Y-%m-%d').date()
                 except ValueError as e:
                     flash("Неверный формат даты. Используйте YYYY-MM-DD.", "danger")
-                    app.logger.error(f"Invalid date format: {request.form['birth_date']}")
+                    app.logger.error(f"Invalid date format: {request.form['birth_date']}, {e}")
                     return redirect(url_for('edit_doctor', doctor_id=doctor_id))
 
                 # Валидация номера телефона
@@ -163,8 +158,6 @@ def setup_edit_doctor_routes(app):
 
         return render_template('edit_doctor.html', doctor=doctor, users=users, departments=departments)
 
-
-def setup_delete_doctor_routes(app):
     @app.route('/delete_doctor/<int:doctor_id>', methods=['POST'])
     def delete_doctor(doctor_id):
         doctor = Doctor.query.get_or_404(doctor_id)

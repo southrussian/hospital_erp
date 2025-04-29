@@ -4,7 +4,7 @@ from models import Patient, MedicalRecord, db
 from datetime import datetime
 
 
-def setup_view_patients_routes(app):
+def setup_patients_routes(app):
     @app.route('/view_patients')
     def view_patients():
         try:
@@ -35,8 +35,6 @@ def setup_view_patients_routes(app):
             flash(f"Ошибка при загрузке пациентов: {str(e)}", "danger")
             return redirect(url_for('dashboard'))  # Перенаправление на главную страницу
 
-
-def setup_add_patient_routes(app):
     @app.route('/add_patient', methods=['GET', 'POST'])
     def add_patient():
         if request.method == 'POST':
@@ -95,8 +93,6 @@ def setup_add_patient_routes(app):
 
         return render_template('add_patient.html')
 
-
-def setup_edit_patient_routes(app):
     @app.route('/edit_patient/<int:patient_id>', methods=['GET', 'POST'])
     def edit_patient(patient_id):
         patient = Patient.query.get_or_404(patient_id)
@@ -139,8 +135,6 @@ def setup_edit_patient_routes(app):
 
         return render_template('edit_patient.html', patient=patient)
 
-
-def setup_delete_patient_routes(app):
     @app.route('/delete_patient/<int:patient_id>', methods=['POST'])
     def delete_patient(patient_id):
         patient = Patient.query.get_or_404(patient_id)
@@ -153,8 +147,6 @@ def setup_delete_patient_routes(app):
             flash(f"Ошибка при удалении пациента: {str(e)}", "danger")
         return redirect(url_for('view_patients'))
 
-
-def setup_patient_details_routes(app):
     @app.route('/patient/<int:patient_id>')
     def patient_details(patient_id):
         try:

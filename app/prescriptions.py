@@ -4,7 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from datetime import datetime, timedelta
 
 
-def setup_view_prescriptions_routes(app):
+def setup_prescriptions_routes(app):
     @app.route('/view_prescriptions')
     def view_prescriptions():
         prescriptions = Prescription.query.options(
@@ -14,8 +14,6 @@ def setup_view_prescriptions_routes(app):
         ).all()
         return render_template('view_prescriptions.html', prescriptions=prescriptions)
 
-
-def setup_add_prescription_routes(app):
     @app.route('/add_prescription', methods=['GET', 'POST'])
     def add_prescription():
         patients = Patient.query.all()
@@ -158,8 +156,6 @@ def setup_add_prescription_routes(app):
                                doctors=doctors,
                                medicines=medicines)
 
-
-def setup_edit_prescription_routes(app):
     @app.route('/edit_prescription/<int:prescription_id>', methods=['GET', 'POST'])
     def edit_prescription(prescription_id):
         prescription = Prescription.query.get_or_404(prescription_id)
@@ -279,8 +275,6 @@ def setup_edit_prescription_routes(app):
                                doctors=doctors,
                                medicines=medicines)
 
-
-def setup_delete_prescription_routes(app):
     @app.route('/delete_prescription/<int:prescription_id>', methods=['POST'])
     def delete_prescription(prescription_id):
         try:
@@ -304,8 +298,6 @@ def setup_delete_prescription_routes(app):
             flash(f"Ошибка при удалении: {e}", "danger")
         return redirect(url_for('view_prescriptions'))
 
-
-def setup_prescription_analytics_routes(app):
     @app.route('/prescription_analytics')
     def prescription_analytics():
         try:

@@ -4,14 +4,12 @@ from sqlalchemy.exc import IntegrityError
 from datetime import datetime
 
 
-def setup_view_medicine_inventory_routes(app):
+def setup_medicine_inventory_routes(app):
     @app.route('/view_medicine_inventory')
     def view_medicine_inventory():
         inventory = MedicineInventory.query.all()
         return render_template('view_medicine_inventory.html', inventory=inventory)
 
-
-def setup_add_medicine_inventory_routes(app):
     @app.route('/add_medicine_inventory', methods=['GET', 'POST'])
     def add_medicine_inventory():
         medicines = Medicine.query.all()
@@ -87,8 +85,6 @@ def setup_add_medicine_inventory_routes(app):
 
         return render_template('add_medicine_inventory.html', medicines=medicines)
 
-
-def setup_edit_medicine_inventory_routes(app):
     @app.route('/edit_medicine_inventory/<int:inventory_id>', methods=['GET', 'POST'])
     def edit_medicine_inventory(inventory_id):
         inventory = MedicineInventory.query.get_or_404(inventory_id)
@@ -170,8 +166,6 @@ def setup_edit_medicine_inventory_routes(app):
                                inventory=inventory,
                                medicines=medicines)
 
-
-def setup_delete_medicine_inventory_routes(app):
     @app.route('/delete_medicine_inventory/<int:inventory_id>', methods=['POST'])
     def delete_medicine_inventory(inventory_id):
         try:
