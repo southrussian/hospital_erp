@@ -10,6 +10,7 @@ from patients import setup_patients_routes
 from prescriptions import setup_prescriptions_routes
 from schedules import setup_schedules_routes
 from users import setup_users_routes
+from rooms import setup_rooms_routes
 
 
 def setup_routes(app):
@@ -25,3 +26,4 @@ def setup_routes(app):
     setup_prescriptions_routes(app)
     setup_schedules_routes(app)
     setup_users_routes(app)
+    setup_rooms_routes(app)
